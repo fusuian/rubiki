@@ -259,13 +259,18 @@ HotRuby.prototype = {
 					break;
 				case "putobject" :
 					var value = cmd[1];
-					if(typeof(value) == "string") {
-						if(value.match(/^(\d+)\.\.(\d+)$/)) {
+					switch(typeof(value)) {
+					case "string" :
+						if(value.match(/^(\d+)(\.\.*)(\d+)$/)) {
 							value = this.createRubyRange(
-								parseInt(RegExp.$2), 
+								parseInt(RegExp.$3), 
 								parseInt(RegExp.$1), 
-								false);
+								RegExp.$2.length == 3);
 						}
+						break;
+					case "boolean" :
+						value = (value)? this.trueObj : this.falseObj; 
+						break;
 					}
 					sf.stack[sf.sp++] = value;
 					break;
@@ -1383,6 +1388,10 @@ HotRuby.prototype.classes = {
 		
 		"to_i" : function(recver) {
 			return Math.floor(recver);	
+		},
+		
+		"class": function(recver) {
+			return this.createRubyString("Float");
 		},
 
 		// 以下、いつかちゃんとIntegerに移したいメソッドw
