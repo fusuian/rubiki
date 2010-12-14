@@ -55,6 +55,8 @@ class RamazikiController < Ramaze::Controller
     @page = url_decode page.to_s
     @text = wiki[@page]
     @title = "#{page} の編集"
+    opcodes = compile(page, parse(@text))
+    @opcode = show_opcode(opcodes)
   end
 
   def modify(page_uri)
@@ -84,7 +86,7 @@ class RamazikiController < Ramaze::Controller
   def compile_ruby(page)
     src = html_unescape request['src']
     parse src
-    compile page, src
+    compile(page, src).to_json
   end
   
   def require
@@ -107,13 +109,13 @@ class RamazikiController < Ramaze::Controller
       myerr = StringIO.open
       $stderr = myerr
       if RUBY_VERSION == "1.9.0"
-        VM::InstructionSequence.compile(src, page, 1, OutputCompileOption).to_a.to_json
+        VM::InstructionSequence.compile(src, page, 1, OutputCompileOption).to_a
       else
-        RubyVM::InstructionSequence.compile(src, page, nil, 1, OutputCompileOption).to_a.to_json
+        RubyVM::InstructionSequence.compile(src, page, nil, 1, OutputCompileOption).to_a
       end
     rescue SyntaxError
       myerr.rewind
-      myerr.readlines.to_json
+      myerr.readlines
     ensure
       myerr.close
       $stderr = STDERR
@@ -142,7 +144,17 @@ class RamazikiController < Ramaze::Controller
   def setter(s)
       %Q(  def #{s}=(v); @#{s} = v; end\n) 
   end
-  
+
+  def show_opcode(opcodes, indent="  ")
+    opcode = opcodes.map {|a|
+      if a.is_a? Array and a[0].is_a? Numeric
+        show_opcode(a, indent+"  ")
+      else
+        "#{indent}#{JSON.generate(a)}"
+      end
+    }
+    "[\n#{opcode*",\n"}]"
+  end
 end
 
 DataDir = "data"

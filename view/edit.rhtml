@@ -29,13 +29,27 @@
 		}
 
 		function run() {
-			var e = document.getElementById("opcode");
-			var opcode = e.innerHTML;
+			var opcode = $("#opcode").text();
 			var unes = unescape(opcode);
 			var oparray = eval("("+unes+")");
 			var hotruby = new HotRuby();
 			hotruby.run(oparray);
 		}
+		
+		$(function(){
+			$("#toggle_opcode").toggle(
+			 function(){
+			 	$("#toggle_opcode").text("バイトコードを隠す");
+			 	$("#opcode").show();
+			 },
+			 function(){
+			 	$("#toggle_opcode").text("バイトコードを見る");
+			 	$("#opcode").hide();
+			 }
+			 );
+			$("#opcode").hide();
+		});
+		
 	</script>
   </head>
   <body>
@@ -48,14 +62,15 @@
 <canvas id="canvas" width="432" height="240" style="border: 3px double black;"></canvas>
 <div>Result:</div>
 <div id="debug" class="result"></div>
-<pre id="opcode" style="visibility:hidden">
-	
+<span id="toggle_opcode">バイトコードを見る</span>
+<pre id="opcode">
+<%= @opcode %>
 </pre>
 <form name="edit" method="POST" action="/modify/<%= u @page %>">
 <input type="submit" value="Save">
-<button type="button" onclick="javascript:compileAndRun()" value="Run">Run</button>
+<button type="button" onclick="javascript:run()" value="Run">Run</button>
 <br />
-<textarea name="text" id="ruby_src" cols="80" rows="20" ><%= @text %></textarea>
+<textarea name="text" id="ruby_src" cols="100" rows="60" ><%= @text %></textarea>
 </form>
 
 <%= footer %>

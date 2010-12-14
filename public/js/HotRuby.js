@@ -1047,10 +1047,8 @@ HotRuby.prototype = {
 						var opcode = eval("(" + response.responseText + ")");
 						opcode_el.innerText = opcode;
 						if (opcode.length > 1) {
-							opcode_el.style.visibility = "hidden";
 							this.run(opcode);
 						} else {
-							opcode_el.style.visibility = "visible";
 							opcode[0].match(/\w+:(\d+):/);
 							this.gotoLine(RegExp.$1);
 							this.printDebug(opcode[0]);
