@@ -55,8 +55,10 @@ class RamazikiController < Ramaze::Controller
     @page = url_decode page.to_s
     @text = wiki[@page]
     @title = "#{page} の編集"
-    opcodes = compile(page, parse(@text))
-    @opcode = show_opcode(opcodes)
+    if @text
+      opcodes = compile(page, parse(@text))
+      @opcode = show_opcode(opcodes)
+    end
   end
 
   def modify(page_uri)
