@@ -179,6 +179,7 @@ HotRuby.prototype = {
 			}
 		} catch (e) {
 			this.gotoLine(sf.lineNo);
+			this.printDebug(e);
 			throw e;		
 		}
 	},
@@ -218,7 +219,7 @@ HotRuby.prototype = {
 			if (!(cmd instanceof Array))
 				continue;
 			
-			//trace("cmd = " + cmd[0] + ", sp = " + sf.sp);
+			//console.trace("cmd = " + cmd[0] + ", sp = " + sf.sp);
 			switch (cmd[0]) {
 				case "jump" :
 					ip = opcode.label2ip[cmd[1]];
@@ -570,7 +571,8 @@ HotRuby.prototype = {
 				return;
 			}
 			if (methodName != "new") {
-				throw "NoMethodError in "+ sf.lineNo + ": undefined method `" + methodName + "' for " + recver + ":" + recverClassName 
+				this.gotoLine(sf.lineNo);
+				throw "NoMethodError in "+ sf.lineNo + ": undefined method `" + methodName + "' for " + recver + ":" + recverClassName
 			}
 		}
 		
@@ -1258,6 +1260,13 @@ HotRuby.prototype.classes = {
 			this.printDebug(str);
 			return this.createRubyString(str);
 		},
+		
+		"breakpoint" : function() {
+			var error     = new Error();
+			error.name    = "BreakPointError";
+			error.message = "BreakPoint.";
+			throw error;  
+		}
 
 	},
 
