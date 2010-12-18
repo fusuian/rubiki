@@ -57,7 +57,9 @@ class RamazikiController < Ramaze::Controller
     @title = "#{page} の編集"
     if @text
       opcodes = compile(page, parse(@text))
-      @opcode = show_opcode(opcodes)
+      @opcode = opcodes.to_json
+      #Ramaze::Log.debug opcodes
+      #@opcode = show_opcode(opcodes)
     end
   end
 
@@ -93,7 +95,7 @@ class RamazikiController < Ramaze::Controller
   
   def require
     lib = html_unescape request['lib']
-    compile lib, parse(wiki[lib])
+    compile(lib, parse(wiki[lib])).to_json
   end
   
   private
@@ -149,11 +151,19 @@ class RamazikiController < Ramaze::Controller
 
   def show_opcode(opcodes, indent="  ")
     opcode = opcodes.map {|a|
-      if a.is_a? Array and a[0].is_a? Numeric
-        show_opcode(a, indent+"  ")
-      else
-        "#{indent}#{JSON.generate(a)}"
+      if a.is_a? Array 
+        case a[0]
+        when Numeric
+          show_opcode(a, indent+"  ")
+          next
+        when String
+          if a[0] =~ /label_/
+            show_opcode(a, indent+"  ")
+            next
+          end
+        end
       end
+      "#{indent}#{JSON.generate(a)}"
     }
     "[\n#{opcode*",\n"}]"
   end

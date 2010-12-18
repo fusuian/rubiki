@@ -30,9 +30,9 @@
 
 		function run() {
 			var opcode = $("#opcode").text();
-			var unes = unescape(opcode);
-			var oparray = eval("("+unes+")");
-			var hotruby = new HotRuby();
+			//var unes = unescape(opcode);
+			var oparray = eval("("+opcode+")");
+			hotruby = new HotRuby();
 			hotruby.run(oparray);
 		}
 		
