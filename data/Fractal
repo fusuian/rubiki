@@ -1,0 +1,44 @@
+require 'Canvas'
+#include Math
+
+def sin(n); Math.sin(n); end
+def cos(n); Math.cos(n); end
+
+canvas = Canvas.new
+ctx = canvas.context
+ctx.lineWidth = 7
+
+puts "Wait a minite..."
+points = []
+scale = 10
+
+int = Interval.new(20) {
+  f = scale/5.0
+  r = (sin(f)+1)*127.0
+  g = (cos(2*f)+1)*127.0
+  b = (sin(3*f)+1)*127.0
+  col = sprintf("#%02x%02x%02x", r, g, b)
+     
+  (0.0).step(2*Math.PI, 0.1) do |i|
+     new_x = 4*scale*Math.sin(i) + 200 + scale*Math.sin(i*2)
+     new_y = 1.5*scale*Math.cos(i) + 120 + scale*Math.cos(i*6)
+     points << [new_x, new_y]
+     if points.size == 3
+        ctx.strokeStyle = col
+        ctx.lineCap = "round"
+        ctx.beginPath
+     	ctx.moveTo points[0][0], points[0][1]
+     	ctx.lineTo points[1][0], points[1][1]
+     	ctx.lineTo points[2][0], points[2][1]
+     	ctx.stroke
+        ctx.closePath
+     	points.shift
+     end
+  end
+  scale += 1
+  if scale > 40
+    puts "Finish."
+    int.stop
+  end
+}
+int.start
