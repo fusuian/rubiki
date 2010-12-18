@@ -371,10 +371,12 @@ HotRuby.prototype = {
 					break;
 				case "getdynamic" :
 					var lookupSF = sf;
-					for (var i = 0;i < cmd[2]; i++) {
+					var idx = cmd[1];
+					var level = cmd[2];
+					for (var i = 0; i < level; i++) {
 						lookupSF = lookupSF.parentStackFrame;
 					}
-					sf.stack[sf.sp++] = lookupSF.localVars[cmd[1]];
+					sf.stack[sf.sp++] = lookupSF.localVars[idx];
 					break;
 				case "setdynamic" :
 					var lookupSF = sf;
@@ -1398,6 +1400,7 @@ HotRuby.prototype.classes = {
 		// 以下、いつかちゃんとIntegerに移したいメソッドw
 		"times" : function(recver, args, sf) {
 			var proc = args[0];
+			proc.__parentStackFrame = sf;
 			for (var i = 0; i < recver; i++) {
 				this.invokeMethod(proc, "yield", [i], sf, 0, false);
 				sf.sp--;
@@ -1407,6 +1410,7 @@ HotRuby.prototype.classes = {
 		"step": function(recver, args, sf) {
 			var finish = args[0];
 			var proc = args[args.length - 1];
+			proc.__parentStackFrame = sf;
 			var step = 1;
 			if (args.length == 3) {
 				step = args[1];
@@ -1427,7 +1431,8 @@ HotRuby.prototype.classes = {
 		
 		"upto": function(recver, args, sf) {
 			var proc = args[1];
-			for (var i = recver; i < args[0]; i++) {
+			proc.__parentStackFrame = sf;
+			for (var i = recver; i <= args[0]; i++) {
 				this.invokeMethod(proc, "yield", [i], sf, 0, false);
 				sf.sp--;
 			}
