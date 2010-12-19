@@ -261,11 +261,13 @@ HotRuby.prototype = {
 					var value = cmd[1];
 					switch(typeof(value)) {
 					case "string" :
-						if(value.match(/^(\d+)(\.\.*)(\d+)$/)) {
+						if (value.match(/^(\d+)(\.\.*)(\d+)$/)) {
 							value = this.createRubyRange(
 								parseInt(RegExp.$3), 
 								parseInt(RegExp.$1), 
 								RegExp.$2.length == 3);
+						} else {
+							value = this.createRubyString(value);
 						}
 						break;
 					case "boolean" :
@@ -277,9 +279,18 @@ HotRuby.prototype = {
 				case "putstring" :
 					sf.stack[sf.sp++] = this.createRubyString(cmd[1]);
 					break;
+				case "tostring" :
+					var recver = sf.stack[--sf.sp];
+					this.invokeMethod(recver, "to_str", [], sf, cmd[4], false);
+					break;
 				case "concatstrings" :
-					sf.stack[sf.sp++] = this.createRubyString(
-						sf.stack.slice(sf.stack.length - cmd[1], sf.stack.length).join());
+					var num = cmd[1];
+					var cat = sf.stack[sf.stack.length - num].__native;
+					while (--num > 0) {
+						cat += sf.stack[sf.stack.length - num].__native;
+					}
+					sf.sp -= cmd[1];
+					sf.stack[sf.sp++] = this.createRubyString(cat);
 					break;
 				case "newarray" :
 					var value = this.createRubyArray(sf.stack.slice(sf.sp - cmd[1], sf.sp));
@@ -1187,10 +1198,17 @@ HotRuby.prototype.classes = {
 		},
 		
 		"to_s" : function(recver) {
-			if(typeof(recver) == "number")
+			if (typeof(recver) == "number")
 				return this.createRubyString(recver.toString());
 			else
 				return this.createRubyString(recver.__native.toString());
+		},
+		
+		"to_str" : function(recver) {
+			if (typeof(recver) == "number")
+				return this.createRubyString(recver.toString());
+			else
+				return this.createRubyString("<" + recver.__className + ":" + recver.__native + ">");
 		},
 		
 		"puts" : function(recver, args, sf) {
@@ -1565,6 +1583,10 @@ HotRuby.prototype.classes = {
 		
 		"size" : function(recver) {
 			return recver.__native.length;
+		},
+		
+		"to_str" : function(recver) {
+			return recver;
 		},
 		
 
