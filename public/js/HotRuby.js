@@ -120,11 +120,11 @@ HotRuby.prototype = {
  	 * @param {Array} opcode
 	 */
 	run : function(opcode) {
-		try {
+		//try {
 			this.runOpcode(opcode, this.classes.Object, null, this.topObject, [], null, false, null);
-		} catch(e) {
-			this.printDebug(e);
-		}
+		//} catch(e) {
+		//	this.printDebug(e);
+		//}
 	},
 	
 	/**
@@ -140,9 +140,9 @@ HotRuby.prototype = {
 	 * @private
 	 */
 	runOpcode : function(opcode, classObj, methodName, self, args, parentSF, isProc, cbaseObj) {
-		if(args.length < opcode[4].arg_size)
-			throw "[runOpcode] Wrong number of arguments (" + args.length + " for " + opcode[4].arg_size + ")";
-		
+		if (args.length < opcode[4].arg_size) {
+			throw "Argument Error in " + parentSF.lineNo + ": Wrong number of arguments (" + args.length + " for " + opcode[4].arg_size + ")";
+		}
 		// Create Stack Frame
 		var sf = new HotRuby.StackFrame();
 		sf.localVars = new Array(opcode[4].local_size + 1);
@@ -512,6 +512,9 @@ HotRuby.prototype = {
 				default :
 					throw "[mainLoop] Unknown opcode : " + cmd[0];
 			}
+			if (sf.sp < 0) {
+				throw "stack size under zero in" + sf.lineNo;
+			}
 		}
 	},
 	
@@ -721,6 +724,9 @@ HotRuby.prototype = {
 	 * Invoke native method or get native instance variable
 	 */
 	invokeNativeMethod: function(recver, methodName, args, sf) {
+		if (recver.__native == undefined) {
+			throw "[invokeNativeMethod] __native is empty in " + sf.lineNo;
+		}
 		// Split methodName and operator
 		var op = this.getOperator(methodName);
 		if(op != null) {
@@ -731,9 +737,15 @@ HotRuby.prototype = {
 		if(recver.__native[methodName] instanceof Function) {
 			// Invoke native method
 			if(op != null)
-				throw "[invokeNativeMethod] Unsupported operator: " + op;
+				throw "[invokeNativeMethod] Unsupported operator: " + op + " in " + sf.lineNo;
 			var convArgs = this.rubyObjectAryToNativeAry(args);
-			ret = recver.__native[methodName].apply(recver.__native, convArgs);
+			try {
+				ret = recver.__native[methodName].apply(recver.__native, convArgs);
+			} catch (e) {
+				this.gotoLine(sf.lineNo);
+				throw e + " in " + sf.lineNo;
+				
+			}
 		} else {
 			// Get native instance variable
 			if(op == null) {
@@ -744,7 +756,7 @@ HotRuby.prototype = {
 						ret = recver.__native[methodName] = this.rubyObjectToNative(args[0]);
 						break;
 					default:
-						throw "[invokeNativeMethod] Unsupported operator: " + op;
+						throw "[invokeNativeMethod] Unsupported operator: " + op + " in " + sf.lineNo;
 				}
 			}
 		}
