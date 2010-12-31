@@ -485,6 +485,7 @@ HotRuby.prototype = {
 								__classVars : {}
 							};
 							this.classes[cmd[1]] = newClass;
+							sf.self = newClass; // 特異メソッド定義のため
 							// Puts the className to CONSTANT
 							this.setConstant(sf, sf.classObj, cmd[1], newClass);
 						}
