@@ -1,0 +1,55 @@
+# コッホ曲線
+# 参考：石立喬さん 再帰プログラムによるフラクタル図形の描画 http://codezine.jp/article/detail/73
+
+require 'Canvas'
+canvas = Canvas.new
+
+def draw_koch(ctx, a, b, n)
+    #puts "a:(#{a.x},#{a.y}) b:(#{b.x},#{b.y})"
+    c = Point.new( (2*a.x + b.x)/3, (2*a.y + b.y)/3 )
+    d = Point.new( (a.x + 2*b.x)/3, (a.y + 2*b.y)/3 )
+    e = Point.new(0, 0)
+    xx = b.x - a.x
+    yy = -(b.y - a.y)
+    
+    distance = Math.sqrt( xx*xx + yy*yy )/Math.sqrt(3)
+    #puts "xx:#{xx} yy:#{yy} distance:#{distance}"
+    if (xx >= 0)  # 右上がり
+        angle1 = Math.atan(yy/xx) + Math.PI/6
+        e.x = a.x + (distance*Math.cos(angle1)).to_i
+        e.y = a.y - (distance*Math.sin(angle1)).to_i
+    else
+        angle1 = Math.atan(yy/xx) - Math.PI/6
+        e.x = b.x + (distance*Math.cos(angle1)).to_i
+        e.y = b.y - (distance*Math.sin(angle1)).to_i
+    end        
+    #puts "angle1:#{angle1} e:#{e.x}, #{e.y}"
+    
+    if n <= 0
+        #[a, c, e, d, b].each {|p| puts p.to_s}
+        ctx.beginPath
+        ctx.moveTo a.x, a.y
+        ctx.lineTo c.x, c.y
+        ctx.lineTo e.x, e.y
+        ctx.lineTo d.x, d.y
+        ctx.lineTo b.x, b.y
+        ctx.stroke
+    else
+        n -= 1
+        draw_koch ctx, a, c, n
+        draw_koch ctx, c, e, n
+        draw_koch ctx, e, d, n
+        draw_koch ctx, d, b, n
+    end        
+end
+
+p = Point.new(100, 60)
+q = Point.new(300, 60)
+r = Point.new(200, 240)
+n = 3
+
+ctx = canvas.context
+ctx.strokeStyle = 'blue'
+draw_koch ctx, p, q, n
+draw_koch ctx, q, r, n
+draw_koch ctx, r, p, n

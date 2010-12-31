@@ -1,0 +1,61 @@
+# 樹木曲線
+# 参考：石立喬さん 再帰プログラムによるフラクタル図形の描画 http://codezine.jp/article/detail/73
+
+require 'Canvas'
+canvas = Canvas.new
+
+def draw_line(ctx, a, b)
+        ctx.beginPath
+        ctx.moveTo a.x, a.y
+        ctx.lineTo b.x, b.y
+        ctx.stroke
+end
+
+STEM_RATIO = 0.25
+BRANCH_RATIO = 0.8
+
+def draw_tree(ctx, a, b, n)
+    
+    xx = b.x - a.x
+    yy = -(b.y - a.y)
+    
+    angle1 = Math.atan(yy/xx) + Math.PI/6
+    angle2 = Math.atan(yy/xx) - Math.PI/6
+    
+    center_length = Math.sqrt(xx*xx + yy*yy)*(1 - STEM_RATIO)
+    branch_length = BRANCH_RATIO*center_length
+    
+    sign = (xx >= 0)? 1 : -1
+    
+    c = Point.new( (a.x + STEM_RATIO*xx).to_i, (a.y - STEM_RATIO*yy).to_i )
+    d = Point.new( c.x + sign*(branch_length*Math.cos(angle1)).to_i,
+                   c.y - sign*(branch_length*Math.sin(angle1)).to_i )
+    e = Point.new( c.x + sign*(branch_length*Math.cos(angle2)).to_i,
+                   c.y - sign*(branch_length*Math.sin(angle2)).to_i )
+    draw_line ctx, a, c
+    if n <= 0
+        draw_line ctx, c, b
+        draw_line ctx, c, d
+        draw_line ctx, c, e
+    else
+        n -= 1
+        draw_tree ctx, c, b, n
+        draw_tree ctx, c, d, n
+        draw_tree ctx, c, e, n
+    end
+end
+
+
+ctx = canvas.context
+ctx.strokeStyle = 'green'
+
+x = 80
+y1 = 230
+y2 = 20
+
+3.times do |i|
+    p = Point.new(x, y1)
+    q = Point.new(x, y2)
+    draw_tree ctx, p, q, i+2
+    x += 150
+end

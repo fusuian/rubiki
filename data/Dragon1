@@ -1,0 +1,28 @@
+# ドラゴン曲線
+# 参考：石立喬さん 再帰プログラムによるフラクタル図形の描画 http://codezine.jp/article/detail/73
+
+require 'Canvas'
+
+def draw_dragon(ctx, a, b, n)
+    xx = b.x - a.x
+    yy = -(b.y - a.y)
+    c = Point.new( a.x + (xx + yy)/2, b.y + (xx + yy)/2 )
+    if n <= 0
+        ctx.beginPath
+        ctx.moveTo a.x, a.y
+        ctx.lineTo c.x, c.y
+        ctx.lineTo b.x, b.y
+        ctx.stroke
+    else
+        n -= 1
+        draw_dragon ctx, a, c, n
+        draw_dragon ctx, b, c, n
+    end
+end
+
+ctx = Canvas.new.context
+
+p = Point.new(100, 100)
+q = Point.new(260, 100)
+ctx.strokeStyle = 'red'
+draw_dragon ctx, p, q, 12
