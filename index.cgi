@@ -56,10 +56,12 @@ class RamazikiController < Ramaze::Controller
     @text = wiki[@page]
     @title = "#{page} の編集"
     if @text
-      opcodes = compile(page, parse(@text))
-      @opcode = opcodes.to_json
-      #Ramaze::Log.debug opcodes
-      #@opcode = show_opcode(opcodes)
+      begin
+        opcodes = compile(page, parse(@text.dup))
+        @opcode = opcodes.to_json
+      rescue SyntaxError
+        @error = $!
+      end
     end
   end
 
@@ -119,7 +121,7 @@ class RamazikiController < Ramaze::Controller
       end
     rescue SyntaxError
       myerr.rewind
-      myerr.readlines
+      raise $!, myerr.read
     ensure
       myerr.close
       $stderr = STDERR

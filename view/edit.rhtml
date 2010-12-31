@@ -61,10 +61,10 @@
 
 <canvas id="canvas" width="432" height="240" style="border: 3px double black;"></canvas>
 <div>Result:</div>
-<div id="debug" class="result"></div>
+<div id="debug" class="result"><pre><%= html_escape @error %></pre></div>
 <span id="toggle_opcode">バイトコードを見る</span>
 <pre id="opcode">
-<%= @opcode %>
+<%= html_escape @opcode %>
 </pre>
 <form name="edit" method="POST" action="/modify/<%= u @page %>">
 <input type="submit" value="Save">
