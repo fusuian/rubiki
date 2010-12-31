@@ -1,0 +1,103 @@
+# 星空画像を作成する
+# 参考：中西 祐介さん作 【デモ】canvas で遊んでみた その２ http://factory.yusukenakanishi.com/html/html5/canvas/002/ より
+
+background_mode = false # true のときページ画面全部使う
+if background_mode
+html=$native.jQuery("html")
+html.css "min-height", "100%"
+html.css "overflow", "auto"
+html.css "position", "relative"
+html.css "z-index", 1
+html.css "background", "#000"
+
+body=$native.jQuery("body")
+body.css "min-height", "100%"
+body.css "margin", 0
+body.css "padding", 0
+body.css "overflow", "auto"
+body.css "position", "relative"
+body.css "z-index", 1
+
+body.prepend %Q(<div id="wrapper"><canvas id="canv"></canvas></div>)
+wrapper = $native.jQuery("#wrapper")
+wrapper.css "height", "auto"
+wrapper.css "overflow", "auto"
+wrapper.css "position", "fixed"
+wrapper.css "z-index", 1
+wrapper.css "width", "100%"
+wrapper.css "height", "100%"
+wrapper.css "min-height", "100%"
+
+width = wrapper.width
+height = wrapper.height
+
+canvas = $native.jQuery("#canv")
+canvas.css "z-index", 1
+canvas.css "position", "fixed"
+canvas.attr "width", width
+canvas.attr "height", height
+else
+canvas = $native.jQuery("#canvas")
+width, height = canvas.attr("width"), canvas.attr("height")
+end
+
+ctx = canvas.get(0).getContext('2d')
+puts "#{width} x #{height}"
+
+lingrad = ctx.createLinearGradient(0, 0, 0, height);
+lingrad.addColorStop(0, '#030617');
+lingrad.addColorStop(0.6, '#030617');
+lingrad.addColorStop(1, '#372021');
+ctx.fillStyle = lingrad
+ctx.fillRect 0, 0, width, height
+    
+ctx.restore
+ctx.save
+    
+class Color
+    def initialize(r, g, b, a)
+        @r, @g, @b = r, g, b
+        @a = a
+    end
+    
+    def rgba
+        "rgba(#{@r},#{@g},#{@b},#{@a})"
+    end
+end
+
+def create_small_star(ctx, left, top, size)
+        ctx.beginPath
+        r = rand(106) + 150
+        g = rand(106) + 150
+        a = rand(11)/10
+        c = Color.new(r, g, 255, a)
+        ctx.fillStyle = c.rgba
+        ctx.fillRect left, top, size, size
+        ctx.fill
+end
+
+def create_big_star(ctx, left, top, size)
+        ctx.beginPath
+        r = rand(106) + 150
+        g = rand(106) + 150
+        a = rand(11)/10
+        radgrad = ctx.createRadialGradient(left, top, 0, left, top, size)
+        white = Color.new(255, 255, 255, 1)
+        color = Color.new(  r,   g, 255, a)
+        radgrad.addColorStop 0, white.rgba
+        radgrad.addColorStop 1, color.rgba
+        ctx.fillStyle = radgrad
+        ctx.arc left, top, size, 0, Math.PI*2, true
+        ctx.fill
+end
+
+
+6000.times { create_small_star ctx, rand(width)+1, rand(height)+1, 1 }
+500.times { create_small_star ctx, rand(width)+1, rand(height)+1, 2 }
+ctx.restore
+ctx.save
+
+100.times { create_big_star ctx, rand(width)+1, rand(height)+1, 2 }
+10.times { create_big_star ctx, rand(width)+1, rand(height)+1, 3 }
+ctx.restore
+ctx.save

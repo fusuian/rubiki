@@ -1,0 +1,108 @@
+# キラキラした画像を作る
+# 参考：渕上伸吾さん作 canvasでキラキラした背景を作る方法 http://tech.kayac.com/archive/canvas_background.html
+
+class Color
+    def initialize(r, g, b)
+        @r, @g, @b = r, g, b
+    end
+    
+    def rgba(a)
+        "rgba(#{@r},#{@g},#{@b},#{a})"
+    end
+    
+    # ランダムな色を得る（cast lot はくじを引くの意）
+    def cast_lot
+        Color.new(rand(255), rand(255), rand(255))
+    end
+end
+
+class Circle
+    attr_accessor :color
+    attr_reader :x
+    attr_reader :y
+    attr_reader :r
+
+    def initialize(x, y, r)
+        @x, @y, @r = x, y, r
+        @color = Color.new(128,128,128)
+    end
+
+    def self.generate(xmax, ymax, rmin, rmax)
+        x = rand(xmax)
+        y = rand(ymax)
+        r = rand(rmax - rmin) + rmin
+        Circle.new(x, y, r)
+    end
+    
+    def draw(ctx)
+        ctx.beginPath
+        gradblur = ctx.createRadialGradient(@x, @y, 0, @x, @y, @r)
+        gradblur.addColorStop(0, @color.rgba(0.93))
+        gradblur.addColorStop(0.4, @color.rgba(0.6))
+        gradblur.addColorStop(0.7, @color.rgba(0.1))
+        gradblur.addColorStop(1, @color.rgba(0))
+        ctx.fillStyle = gradblur
+        ctx.arc(@x, @y, @r, 0, Math.PI*2, false)
+        ctx.fill    
+    end
+end
+
+
+
+debug = $native.jQuery("#debug")
+debug.css "background", "none repeat scroll 0 0 rgba(245, 245, 245, 0.7)"
+
+
+html=$native.jQuery("html")
+html.css "min-height", "100%"
+html.css "overflow", "auto"
+html.css "position", "relative"
+html.css "z-index", 1
+html.css "background", "#000"
+
+body=$native.jQuery("body")
+body.css "min-height", "100%"
+body.css "margin", 0
+body.css "padding", 0
+body.css "overflow", "auto"
+body.css "position", "relative"
+body.css "z-index", 1
+
+body.prepend %Q(<div id="wrapper"><canvas id="canv"></canvas></div>)
+wrapper = $native.jQuery("#wrapper")
+wrapper.css "height", "auto"
+wrapper.css "overflow", "auto"
+wrapper.css "position", "fixed"
+wrapper.css "z-index", 1
+wrapper.css "width", "100%"
+wrapper.css "height", "100%"
+wrapper.css "min-height", "100%"
+
+width = wrapper.width
+height = wrapper.height
+
+canvas = $native.jQuery("#canv")
+canvas.css "z-index", 1
+canvas.css "position", "fixed"
+canvas.attr "width", width
+canvas.attr "height", height
+
+
+
+context = canvas.get(0).getContext('2d')
+puts context
+
+context.globalCompositeOperation = "source-over"
+context.fillStyle = 'black'
+context.fillRect 0,0,100,100
+puts "#{width} x #{height}"
+context.fillRect 0, 0, width, height
+context.globalCompositeOperation = "lighter"
+
+10.times do
+    c = Circle.generate(width, height, width/14, width/3)
+    c.color = Color.cast_lot
+    puts "(#{c.x}, #{c.y}): #{c.r}"
+    puts c.color.rgba(1)
+    c.draw context
+end
