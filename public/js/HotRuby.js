@@ -285,9 +285,9 @@ HotRuby.prototype = {
 					break;
 				case "concatstrings" :
 					var num = cmd[1];
-					var cat = sf.stack[sf.stack.length - num].__native;
+					var cat = sf.stack[sf.sp - num].__native;
 					while (--num > 0) {
-						cat += sf.stack[sf.stack.length - num].__native;
+						cat += sf.stack[sf.sp - num].__native;
 					}
 					sf.sp -= cmd[1];
 					sf.stack[sf.sp++] = this.createRubyString(cat);
@@ -1275,15 +1275,15 @@ HotRuby.prototype.classes = {
 				}
 				
 				var origSP = sf.sp;
-				//try {
+				try {
 					this.invokeMethod(obj, "to_ary", [], sf, 0, false);
 					obj = sf.stack[--sf.sp];
 					for(var j=0; j<obj.__native.length; j++) {
 						this.printDebug(obj.__native[j]);
 					}
 					continue;
-				//} catch(e) {
-				//}
+				} catch(e) {
+				}
 				sf.sp = origSP;
 
 				this.invokeMethod(obj, "to_s", [], sf, 0, false);
