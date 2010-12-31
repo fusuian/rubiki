@@ -1222,6 +1222,14 @@ HotRuby.prototype.classes = {
 					this.printDebug("nil");
 					continue;
 				}
+				if(obj == this.trueObj) {
+					this.printDebug("true");
+					continue;
+				}
+				if(obj == this.falseObj) {
+					this.printDebug("false");
+					continue;
+				}
 				if(typeof(obj) == "number") {
 					this.printDebug(obj);
 					continue;
@@ -1236,17 +1244,33 @@ HotRuby.prototype.classes = {
 					}
 					continue;
 				}
+				if (obj.__className == "Hash") {
+					for(var j=0 in obj.__native) {
+						this.printDebug(j);
+					}
+					continue;
+				}
+				if (obj.__className == "NativeObject") {
+					if (typeof(obj.__native) == "Array") {
+						for(var j=0; j<obj.__native.length; j++) {
+							this.printDebug(obj.__native[j]);
+						}
+					} else {
+						this.printDebug("<" + obj.__className + ":" + obj.__native + ">");
+					}
+					continue;
+				}
 				
 				var origSP = sf.sp;
-				try {
+				//try {
 					this.invokeMethod(obj, "to_ary", [], sf, 0, false);
 					obj = sf.stack[--sf.sp];
 					for(var j=0; j<obj.__native.length; j++) {
 						this.printDebug(obj.__native[j]);
 					}
 					continue;
-				} catch(e) {
-				}
+				//} catch(e) {
+				//}
 				sf.sp = origSP;
 
 				this.invokeMethod(obj, "to_s", [], sf, 0, false);
@@ -1285,6 +1309,14 @@ HotRuby.prototype.classes = {
 			var str = va_sprintf(args);
 			this.printDebug(str);
 			return this.createRubyString(str);
+		},
+		
+		"rand": function(recver, args) {
+			var r = Math.random();
+			if (args.length != 0) {
+				r = Math.floor(r*args[0]);
+			}
+			return r;
 		},
 		
 		"breakpoint" : function() {
@@ -1640,7 +1672,11 @@ HotRuby.prototype.classes = {
 	
 	"Hash" : {
 		"[]" : function(recver, args) {
-			return recver.__native[args[0].__native];
+			var val = recver.__native[args[0].__native];
+			if (val == undefined) {
+				val = this.nilObj;
+			}
+			return val;
 		},
 		
 		"[]=" : function(recver, args) {
@@ -1656,7 +1692,19 @@ HotRuby.prototype.classes = {
 		
 		"size" : function(recver) {
 			return recver.__instanceVars.length++;
-		}
+		},
+		
+		"each" : function(recver, args, sf) {
+			var k;
+			for (k in recver.__native) {
+				var value = recver.__native[k];
+				var key = this.createRubyString(k);
+				this.invokeMethod(args[0], "yield", [key, value], sf, 0, false);
+				sf.sp--;
+			}
+		},
+		
+
 	},
 	
 	"Range" : {
