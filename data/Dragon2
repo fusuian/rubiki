@@ -3,11 +3,12 @@
 
 require 'Canvas'
 
-# 再帰回数
-n = 8
+# 繰り返し回数
+MAX = 11
 # 二頂点
-p = Point.new(100, 100)
-q = Point.new(260, 100)
+p = Point.new(130, 80)
+q = Point.new(330, 80)
+
 
 def draw_dragon(ctx, a, b, n)
     xx = b.x - a.x
@@ -26,6 +27,20 @@ def draw_dragon(ctx, a, b, n)
     end
 end
 
-ctx = Canvas.new.context
-ctx.strokeStyle = 'red'
-draw_dragon ctx, p, q, n
+canvas = Canvas.new
+ctx = canvas.context
+
+n = 0
+int = Interval.new(1000) {
+    canvas.clear
+    ctx.fillStyle = 'black'
+    ctx.fillText "n=#{n}", 10, 20
+    ctx.strokeStyle = 'red'
+    draw_dragon ctx, p, q, n
+    if n >= MAX
+        int.stop
+        puts "finish."
+    end
+    n += 1
+}
+int.start

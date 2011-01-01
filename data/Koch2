@@ -51,7 +51,22 @@ end
 
 canvas = Canvas.new
 ctx = canvas.context
-ctx.strokeStyle = 'blue'
-draw_koch ctx, p, q, n
-draw_koch ctx, q, r, n
-draw_koch ctx, r, p, n
+ctx.font = "18px 'Monotype Corsiva'"
+ctx.fillStyle = 'black'
+
+n = 0
+int = Interval.new(1000) {
+    canvas.clear
+    ctx.strokeStyle = 'black'
+    ctx.strokeText "n=#{n}", 10, 20
+    ctx.strokeStyle = 'blue'
+    draw_koch ctx, p, q, n
+    draw_koch ctx, q, r, n
+    draw_koch ctx, r, p, n
+    if n >= 4
+        int.stop
+        puts "finish."
+    end
+    n += 1
+}
+int.start

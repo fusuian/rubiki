@@ -6,7 +6,7 @@ class Canvas
   attr_accessor :background
 
   def initialize
-	doc = $native.window.document
+    doc = $native.window.document
     @canvas = doc.getElementById('canvas')
     #@canvas.width = width if width
     #@canvas.height = height if height
@@ -14,6 +14,7 @@ class Canvas
     @height = @canvas.height
     @context = @canvas.getContext('2d')
     @background = 'white'
+    @context.font = "18px 'Monotype Corsiva'"
 
     clear
   end
@@ -53,3 +54,16 @@ class Sprite
   end
 end
 
+class Point
+    attr_accessor :x
+    attr_accessor :y
+    
+    def initialize(x, y)
+        @x = x
+        @y = y
+    end
+    
+    def to_s
+        "(#{@x}, #{@y})"
+    end
+end

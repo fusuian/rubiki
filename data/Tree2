@@ -3,14 +3,15 @@
 
 require 'Canvas'
 
+# 繰り返し回数
+MAX = 5
 # 二頂点
 p = Point.new(220, 230)
 q = Point.new(220, 10)
-# 再帰回数
-n = 4
 # 樹木の形状
 STEM_RATIO = 0.25
-BRANCH_RATIO = 0.9
+BRANCH_RATIO = 0.75
+
 
 def draw_line(ctx, a, b)
     ctx.beginPath
@@ -20,7 +21,6 @@ def draw_line(ctx, a, b)
 end
 
 def draw_tree(ctx, a, b, n)
-    
     xx = b.x - a.x
     yy = -(b.y - a.y)
     
@@ -49,8 +49,20 @@ def draw_tree(ctx, a, b, n)
         draw_tree ctx, c, e, n
     end
 end
-
 canvas = Canvas.new
 ctx = canvas.context
-ctx.strokeStyle = 'green'
-draw_tree ctx, p, q, n
+
+n = 0
+int = Interval.new(1000) {
+    canvas.clear
+    ctx.fillStyle = 'black'
+    ctx.fillText "n=#{n}", 10, 20
+    ctx.strokeStyle = 'green'
+    draw_tree ctx, p, q, n
+    if n >= MAX
+        int.stop
+        puts "finish."
+    end
+    n += 1
+}
+int.start
