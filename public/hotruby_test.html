@@ -1,0 +1,42 @@
+<?xml version="1.0" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>HotRuby Unit Test</title>
+		<script language="JavaScript" type="text/javascript" src="/jsUnit/jsUnitCore.js"></script>
+	    <script type="text/javascript" src="/js/jquery.js"></script>
+		<script type="text/javascript" src="/js/ext-base.js"></script>
+		<script type="text/javascript" src="/js/printf.js"></script>
+		<script type="text/javascript" src="/js/HotRuby.js"></script>
+		<script language="JavaScript" type="text/javascript">
+			
+		function compileAndRun(test, src) {
+			hotruby = new HotRuby();
+			hotruby.compileAndRunSync("/compile_ruby/" + escape(test), src);
+		}
+		
+		function setUp(){
+  			this.debug = $("#debug");
+    	}
+		
+    	function tearDown() {
+			this.debug.empty();
+    	}
+				
+		// テストコードを記述
+		function testHelloWorld() {
+			compileAndRun("testHelloWorld", "puts %Q(Hello, World!)");
+  			assertEquals('Hello, World!', this.debug.text());
+		}
+
+		</script>
+	</head>
+	<body>
+		<div id="content">
+			<canvas id="canvas" width="432" height="240" style="border: 3px double black;"></canvas>
+			<div>Result:</div>
+			<div id="debug" class="result"></div>
+		</div>
+	</body>
+</html>

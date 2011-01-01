@@ -1078,7 +1078,9 @@ HotRuby.prototype = {
 					} else {
 						var opcode_el = document.getElementById('opcode');
 						var opcode = eval("(" + response.responseText + ")");
-						opcode_el.innerText = opcode;
+						if (opcode_el) {
+							opcode_el.innerText = opcode;
+						}
 						if (opcode.length > 1) {
 							this.run(opcode);
 						} else {
@@ -1095,6 +1097,39 @@ HotRuby.prototype = {
 			},
 			"src=" + encodeURIComponent(src)
 		);
+	},
+	
+	/**
+	 * Get the library from server.
+	 * @param {lib} A library page
+	 */
+	compileAndRunSync : function(url, src) {
+		var html = $.ajax({
+			url : url,
+			data : { src: src },
+    		async : false, // ←デフォルトはtrue（非同期）
+			success : function(response){
+				if(response.length == 0) {
+					alert("Compile failed");
+				} else {
+					var opcode_el = document.getElementById('opcode');
+					var opcode = eval("(" + response + ")");
+					if (opcode_el) {
+						opcode_el.innerText = opcode;
+					}
+					if (opcode.length > 1) {
+						hotruby.run(opcode);
+					} else {
+						opcode[0].match(/\w+:(\d+):/);
+						this.gotoLine(RegExp.$1);
+						this.printDebug(opcode[0]);
+					}
+				}
+			},
+			failure: function(response){
+				alert("Compile failed");
+			}
+		});
 	},
 	
 	/**
