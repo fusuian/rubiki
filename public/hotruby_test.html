@@ -30,6 +30,23 @@
   			assertEquals('Hello, World!', this.debug.text());
 		}
 
+		function testArguments() {
+			var src = $("#arguments").text(); 
+			compileAndRun("test", src);
+  			assertEquals('10, 200', this.debug.text());
+		}
+		
+		function testMethodArguments() {
+			var src = $("#method_arguments").text(); 
+			compileAndRun("test", src);
+  			assertEquals('10, 200', this.debug.text());
+		}
+		
+		function testMultipleAssignment() {
+			var src = $("#multiple_assignment").text(); 
+			compileAndRun("test", src);
+  			assertEquals('10, 200', this.debug.text());
+		}
 		</script>
 	</head>
 	<body>
@@ -38,5 +55,29 @@
 			<div>Result:</div>
 			<div id="debug" class="result"></div>
 		</div>
+		<textarea id = "arguments">
+			class Hoge
+				attr_reader :a
+				attr_reader :b
+				def initialize(a, b)
+		 			@a, @b = a, b
+				end
+			end
+			hoge = Hoge.new(10, 200)
+			puts "#{hoge.a}, #{hoge.b}"
+		</textarea>
+		
+		<textarea id = "method_arguments">
+			def hoge(a, b)
+				 c, d = a, b
+				 puts "#{c}, #{d}"
+			end
+			hoge 10, 200
+		</textarea>
+		
+		<textarea id="multiple_assignment">
+			a, b = 10, 200
+			puts "#{a}, #{b}"
+		</textarea>
 	</body>
 </html>
