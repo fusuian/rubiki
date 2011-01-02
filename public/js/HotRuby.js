@@ -303,8 +303,9 @@ HotRuby.prototype = {
 				case "expandarray" :
 					var ary = sf.stack[--sf.sp];
 					if(typeof(ary) == "object" && ary.__className == "Array") {
-						for(var i=0; i<cmd[1]; i++) {
-							sf.stack[sf.sp++] = ary.__native[i];						
+						var size = cmd[1];
+						for(var i = 0; i < size; i++) {
+							sf.stack[sf.sp++] = ary.__native[size - i - 1];						
 						}
 						if(cmd[2] && 1) {
 							// TODO
@@ -1495,13 +1496,17 @@ HotRuby.prototype.classes = {
 			return this.createRubyString("Float");
 		},
 
+		"**" : function(recver, args) {
+			return Math.pow(recver, args[0]);
+		},
+
 		// 以下、いつかちゃんとIntegerに移したいメソッドw
 		"times" : function(recver, args, sf) {
 			var proc = args[0];
 			proc.__parentStackFrame = sf;
 			for (var i = 0; i < recver; i++) {
 				this.invokeMethod(proc, "yield", [i], sf, 0, false);
-				sf.sp--;
+				//sf.sp--;
 			}
 		},
 		

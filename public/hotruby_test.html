@@ -45,8 +45,54 @@
 		function testMultipleAssignment() {
 			var src = $("#multiple_assignment").text(); 
 			compileAndRun("test", src);
-  			assertEquals('10, 200', this.debug.text());
+  			assertEquals('1,2|1,2,3|1,2,3,4', this.debug.text());
 		}
+
+		function testClassVar() {
+			var src = $("#classvar").text(); 
+			compileAndRun("test", src);
+			var divs = $("#debug > div")
+			assertEquals(2, divs.length);
+  			assertEquals('foobar', divs.text());
+		}
+		
+		function testHashSymbol(){
+			var src = $("#hash_symbol").text();
+			compileAndRun("test", src);
+			assertEquals("truenilOK", this.debug.text());
+		}
+		
+		function testTimeTime(){
+			var src = $("#timetime").text();
+			compileAndRun("test", src);
+			assertEquals("0, 0|1, 0|2, 0|0, 1|1, 1|2, 1|0, 2|1, 2|2, 2|", this.debug.text());
+		}
+
+		function testUptoStep(){
+			var src = $("#upto_step").text();
+			compileAndRun("test", src);
+			assertEquals("10,20|10,21|10,22|11,20|11,21|11,22|12,20|12,21|12,22|", this.debug.text());
+		}
+
+		function testSprintf(){
+			var src = $("#sprintf").text();
+			compileAndRun("test", src);
+			assertEquals("%4d|117| 117|0117|0075|#75|[%string]|", this.debug.text());
+		}
+
+//		pending		
+//		function testDefaultArg() {
+//			var src = $("#default_arg").text();
+//			compileAndRun("test", src);
+//			assertEquals("2|2|", this.debug.text());
+//		}
+				
+		function testPow() {
+			var src = $("#pow").text();
+			compileAndRun("test", src);
+			assertEquals("4|27|125|1|", this.debug.text());
+		}
+				
 		</script>
 	</head>
 	<body>
@@ -76,8 +122,85 @@
 		</textarea>
 		
 		<textarea id="multiple_assignment">
-			a, b = 10, 200
-			puts "#{a}, #{b}"
+			a, b = 1, 2
+			puts "#{a},#{b}|"
+			a, b, c = 1, 2, 3
+			puts "#{a},#{b},#{c}|"
+			a, b, c, d = 1, 2, 3, 4
+			puts "#{a},#{b},#{c},#{d}"
+		</textarea>
+		
+		<textarea id="classvar">
+			class Foo
+  				@@foo = :foo
+  
+  				def foo
+    				@@foo
+  				end
+  
+  				def foo=(var)
+    				@@foo=var
+  				end
+			end
+
+			f1 = Foo.new
+			puts f1.foo
+			f1.foo = :bar
+			f2 = Foo.new
+			puts f2.foo
+		</textarea>
+		
+		<textarea id="hash_symbol">
+			$foo = {}
+			$foo[:bar] = true
+			puts $foo[:bar]
+			puts $foo[:foo]
+			if $foo[:bar]
+  				puts "OK"
+			else
+  				puts "NG"
+			end
+		</textarea>
+		
+		<textarea id="timetime">
+			3.times do |y|
+  				3.times do |x|
+    				puts "#{x}, #{y}|"
+  				end
+			end
+		</textarea>
+		
+		<textarea id="sprintf">
+			puts "%4d|"
+			puts sprintf("%d|", 117.14) # 117
+			puts sprintf("%4d|", 117.14) # 117
+			puts sprintf("%04d|", 117.14) # 0117
+			puts sprintf("%04x|", 117.14) # 0075
+			puts sprintf("#%02x|", 117.14) # #75
+			puts sprintf("[%%%s]|", "string") # [%string]
+		</textarea>
+		
+		<textarea id="upto_step">
+			10.upto(12) do |x|
+  				20.step(22) do |y|
+     				puts "#{x},#{y}|"
+  				end
+			end
+		</textarea>
+		
+		<textarea id="default_arg">
+			def hoge(a = 0)
+				a*2
+			end
+			puts "#{hoge(2)}|" 
+			#puts "#{hoge}|" 
+		</textarea>
+		
+		<textarea id="pow">
+			puts "#{2**2}|"
+			puts "#{3**3}|"
+			puts "#{5**3}|"
+			puts "#{1**0}|"
 		</textarea>
 	</body>
 </html>
