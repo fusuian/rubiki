@@ -1,4 +1,5 @@
 <?xml version="1.0" ?>
+<% # coding: utf-8 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
@@ -7,18 +8,21 @@
 
 	<link href="/css/default.css" type="text/css" rel="stylesheet" />
 	<link href="/css/prettify.css" type="text/css" rel="stylesheet" />
+<!--	<link href="/css/jquery.mobile-1.0a2.min.css" type="text/css" rel="stylesheet" /> -->
+
+	<script type="text/javascript" src="/js/jquery-1.4.4.min.js"></script>
+<!--	<script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script>
+-->
 	
-    <script type="text/javascript" src="/js/jquery.js"></script>
 	<script type="text/javascript" src="/js/prettify.js"></script>
-	<script type="text/javascript" src="/js/ext-base.js"></script>
-	<script type="text/javascript" src="/js/printf.js"></script>
 	<script type="text/javascript" src="/js/HotRuby.js"></script>
 	<script language="javascript" type="text/javascript" src="/editarea/edit_area_full.js"></script>
 	<script language="javascript" type="text/javascript">
 		editAreaLoader.init({
 			id : "ruby_src",
 			syntax: "ruby",
-			font_size: 12, 
+			font_size: 14, 
+			replace_tab_by_spaces: 4,
 			start_highlight: true	// to display with highlight mode on start-up
 		});
 
@@ -58,7 +62,7 @@
     <%= flashbox %>
 	
 
-
+<div id="content">
 <canvas id="canvas" width="432" height="240" style="border: 3px double black;"></canvas>
 <div>Result:</div>
 <div id="debug" class="result"><pre><%= html_escape @error %></pre></div>
@@ -67,12 +71,12 @@
 <%= html_escape @opcode %>
 </pre>
 <form name="edit" method="POST" action="/modify/<%= u @page %>">
-<input type="submit" value="Save">
-<button type="button" onclick="javascript:run()" value="Run">Run</button>
+<input type="submit" accesskey="s" value="Save">
+<button type="button" accesskey="g" onclick="javascript:run()" value="Run">Run</button>
 <br />
 <textarea name="text" id="ruby_src" cols="100" rows="60" ><%= @text %></textarea>
 </form>
-
+</div>
 <%= footer %>
  </body>
 </html>
