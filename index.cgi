@@ -48,13 +48,18 @@ class RamazikiController < Ramaze::Controller
   def edit(page = nil)
     @content = page
     page ||= request['page']
+    Ramaze::Log.debug "page: #{page}: encoding=#{page.encoding}"
+    
+
     unless page
       flash[:error] = "ページが指定されていません。"
       redirect r(:home)
     end
     @page = url_decode page.to_s
+    @page.force_encoding 'utf-8'
+    Ramaze::Log.debug "page: #{@page}: encoding=#{@page.encoding}"
     @text = wiki[@page]
-    @title = "#{page} の編集"
+    @title = "#{@page} の編集"
     if @text
       begin
         opcodes = compile(page, parse(@text.dup))
@@ -68,11 +73,12 @@ class RamazikiController < Ramaze::Controller
   def modify(page_uri)
     #page ||= request['page']
     page = URI.decode page_uri.to_s
+    page.force_encoding 'utf-8'
     
     if request['text']
       text = request['text'].to_s
       if text.empty?
-        wiki.delete page
+        wiki.delete page_uri
         flash[:notice] = "#{page} を削除しました。"
         redirect r(:home)
       elsif wiki[page] == text
@@ -91,8 +97,14 @@ class RamazikiController < Ramaze::Controller
   
   def compile_ruby(page)
     src = html_unescape request['src']
-    parse src
-    compile(page, src).to_json
+    if src
+      begin
+        opcodes = compile(page, parse(src))
+        opcodes.to_json
+      rescue SyntaxError
+        $!
+      end
+    end
   end
   
   def require
@@ -132,23 +144,23 @@ class RamazikiController < Ramaze::Controller
   # 1.attr_* を setter/getter に書き換える。
   def parse(src)
     src.gsub!(/attr_reader (:(\w+),*\s*)*/) {
-      getter $2
+      "#{getter($2)}\n"
     }
     src.gsub!(/attr_writer (:(\w+),*\s*)*/) { 
-      setter $2
+      "#{setter($2)}\n"
     }
     src.gsub!(/attr_accessor (:(\w+),*\s*)*/) { 
-      getter($2) + setter($2)
+      "#{getter($2)}#{setter($2)}\n"
     }
     src
   end
 
   def getter(s)
-      %Q(  def #{s}; @#{s}; end\n) 
+      %Q(  def #{s}; @#{s}; end; ) 
   end
   
   def setter(s)
-      %Q(  def #{s}=(v); @#{s} = v; end\n) 
+      %Q(  def #{s}=(v); @#{s} = v; end; ) 
   end
 
   def show_opcode(opcodes, indent="  ")

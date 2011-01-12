@@ -68,11 +68,10 @@
 <div id="debug" class="result"><pre><%= html_escape @error %></pre></div>
 <span id="toggle_opcode">バイトコードを見る</span>
 <pre id="opcode">
-<%= html_escape @opcode %>
 </pre>
 <form name="edit" method="POST" action="/modify/<%= u @page %>">
 <input type="submit" accesskey="s" value="Save">
-<button type="button" accesskey="g" onclick="javascript:run()" value="Run">Run</button>
+<button type="button" accesskey="g" onclick="javascript:compileAndRun()" value="Run">Run</button>
 <br />
 <textarea name="text" id="ruby_src" cols="100" rows="60" ><%= @text %></textarea>
 </form>
