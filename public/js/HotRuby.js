@@ -1418,69 +1418,36 @@ HotRuby.prototype = {
 	},
 	
 	/**
-	 * Send the source to server and run.
-	 * @param {String} url Ruby compiler url
-	 * @param {src} Ruby source
-	 */
-	compileAndRun : function(url, src) {
-		$.ajax({
-			type: "POST",
-   			url: url,
-			data: "src=" + encodeURIComponent(src),
-			success: function(data, dataType) {
-					if(data.length == 0) {
-						alert("Compile failed");
-					} else {
-						var opcode_el = document.getElementById('opcode');
-						var opcode = eval("(" + data + ")");
-						if (opcode_el) {
-							opcode_el.innerText = opcode;
-						}
-						if (opcode.length > 1) {
-							this.run(opcode);
-						} else {
-							opcode[0].match(/\w+:(\d+):/);
-							this.gotoLine(RegExp.$1);
-							this.printDebug(opcode[0]);
-						}
-					}
-			},
-			error: function(response, textStatus, errorThrown) {
-				alert("Compile failed");
-			},
-
-		});
-	},
-	
-	/**
 	 * Get the library from server.
 	 * @param {lib} A library page
 	 */
-	compileAndRunSync : function(url, src) {
+	compileAndRun : function(url, src, async) {
 		var html = $.ajax({
 			url : url,
-			data : { src: src },
-    		async : false, // ←デフォルトはtrue（非同期）
+			data : { src: encodeURIComponent(src) },
+			type : "POST",
+    		async : async, 
 			success : function(response){
 				if(response.length == 0) {
 					alert("Compile failed");
 				} else {
-					var opcode_el = document.getElementById('opcode');
-					var opcode = eval("(" + response + ")");
-					if (opcode_el) {
-						opcode_el.innerText = opcode;
-					}
-					if (opcode.length > 1) {
+					response = response.replace(/\+/g, " ");
+					var opcode_text = unescape(response);
+					var opcode = eval("(" + opcode_text + ")");
+					$("#opcode").text(opcode_text);
+					if (opcode.length > 0) {
 						hotruby.run(opcode);
 					} else {
 						opcode[0].match(/\w+:(\d+):/);
-						this.gotoLine(RegExp.$1);
-						this.printDebug(opcode[0]);
+						hotruby.gotoLine(RegExp.$1);
+						hotruby.printDebug(opcode[0]);
 					}
 				}
 			},
 			error: function(response){
-				alert("Compile failed");
+//			alert("Compile failed");
+					var w = window.open();
+					$("html", w.document).html(response.responseText);
 			}
 		});
 	},
