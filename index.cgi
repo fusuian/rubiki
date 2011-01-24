@@ -46,22 +46,15 @@ class RamazikiController < Ramaze::Controller
   end
 
   def edit(page = nil)
-    @content = page
     page ||= request['page']
-    Ramaze::Log.debug "page: #{page}: encoding=#{page.encoding}"
-    
-
     unless page
       flash[:error] = "ページが指定されていません。"
-      redirect r(:home)
+      Ramaze::Log.debug redirect r(:home)
     end
+    @text = wiki[page]
     @page = url_decode page.to_s
     @page.force_encoding 'utf-8'
-    Ramaze::Log.debug "page: #{@page}: encoding=#{@page.encoding}"
-    @text = wiki[@page]
     @title = "#{@page} の編集"
-    response["Access-Control"] = "allow <*>"
-
   end
 
   def modify(page_uri)
@@ -74,11 +67,11 @@ class RamazikiController < Ramaze::Controller
         wiki.delete page_uri
         flash[:notice] = "#{page} を削除しました。"
         redirect r(:home)
-      elsif wiki[page] == text
+      elsif wiki[page_uri] == text
         flash[:notice] = "内容が変更されていません。"
         redirect r(:edit, page_uri)
       else
-        wiki[page] = text
+        wiki[page_uri] = text
         flash[:notice] = "更新しました。"
         redirect r(:edit, page_uri)
       end
@@ -88,9 +81,8 @@ class RamazikiController < Ramaze::Controller
     end
   end
 
-  def require
-    lib = html_unescape request['lib']
-    compile(lib, parse(wiki[lib])).to_json
+  def source(lib)
+    wiki[lib].to_json
   end
 
 end

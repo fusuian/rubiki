@@ -402,6 +402,8 @@ var HotRuby = function() {
 
 	this.loaded_feature = {};
 	
+	this.server_uri = "http://192.168.2.111:7070";
+	
 	this.checkEnv();
 };
 
@@ -1429,7 +1431,7 @@ HotRuby.prototype = {
     		async : async, 
 			success : function(response){
 				if(response.length == 0) {
-					alert("Compile failed");
+					alert("no bytecode.");
 				} else {
 					response = response.replace(/\+/g, " ");
 					var opcode_text = unescape(response);
@@ -1445,9 +1447,7 @@ HotRuby.prototype = {
 				}
 			},
 			error: function(response){
-//			alert("Compile failed");
-					var w = window.open();
-					$("html", w.document).html(response.responseText);
+				alert("Compile failed");
 			}
 		});
 	},
@@ -1458,26 +1458,24 @@ HotRuby.prototype = {
 	 */
 	require : function(lib) {
 		if (this.loaded_feature.lib == undefined) {
+			var lib = encodeURIComponent(lib);
 			this.loaded_feature.lib = lib;
+			//this.compileAndRun(url, src, true);
 			var html = $.ajax({
-			    url : "/require",
-				data : { lib : encodeURIComponent(lib) },
+			    url : "/source/" + lib,
     			async : false, // ←デフォルトはtrue（非同期）
 				success : function(response){
 					if (response.length == 0) {
-						alert("Compile failed");
+						alert("require no data.");
+					} else {
+						response = response.replace(/\+/g, " ");
+						var src = eval("(" + response + ")"); 
+						var uri = hotruby.server_uri + "/compile_ruby/" + lib
+						hotruby.compileAndRun(uri, src, false);
 					}
-					else 
-						if (response == "[\"compile error\"]") {
-							alert(response);
-						}
-						else {
-							var opc = eval("(" + response + ")");
-							hotruby.run(opc);
-						}
 				},
 				failure: function(response){
-					alert("Compile failed");
+					alert("require failed");
 				}
 			});
 		}

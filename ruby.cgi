@@ -23,34 +23,34 @@ class RamazikiController < Ramaze::Controller
     "ruby.cgi index"
   end
 
-    def compile_ruby(page)
+  def compile_ruby(page)
     Ramaze::Log.debug "compile_ruby"
     Ramaze::Log.debug request.inspect
     response["Access-Control-Allow-Origin"] = "*"
     
     src = url_decode request['src']
-    Ramaze::Log.debug "src = <#{src}>"
+    #Ramaze::Log.debug "src = <#{src}>"
     if src.empty?
       "Empty Source Code!"
     else
       begin
-        Ramaze::Log.debug "parse <#{parse(src)}>"
+        #Ramaze::Log.debug "parse <#{parse(src)}>"
         opcodes = compile(page, parse(src))
-        Ramaze::Log.debug "opcode = <#{opcodes}>"
+        #Ramaze::Log.debug "opcode = <#{opcodes}>"
         u opcodes.to_json
       rescue SyntaxError
-        Ramaze::Log.debug "SyntaxError"
+        #Ramaze::Log.debug "SyntaxError"
         u $!.to_json
       rescue
-        Ramaze::Log.debug "UnsupportedError"
+        #Ramaze::Log.debug "UnsupportedError"
         u $!.to_json
       end
     end
   end
   
-  def require
-    lib = html_unescape request['lib']
-    u compile(lib, parse(wiki[lib])).to_json
+  def require(lib)
+    page = html_unescape lib
+    u compile(lib, parse(wiki[page])).to_json
   end
   
   private

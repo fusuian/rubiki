@@ -6,7 +6,7 @@ require 'json'
 require 'prettyprint'
 
 describe "ruby.cgi は、" do
-  Home = "http://localhost:7070/"
+  Home = "http://192.168.2.111:7070/"
 
   before do
     @agent = Mechanize.new
@@ -19,7 +19,8 @@ describe "ruby.cgi は、" do
 
   it "compile_ruby で JSON のバイトコードを返す。" do
     page = @agent.post Home + "compile_ruby/hello", { :src => "puts 'hello'"}
-    json = JSON.load page.body
+    code = URI.decode page.body.gsub(/\+/, " ")
+    json = JSON.load code
     json.should be_a Array
     json[0].should == "YARVInstructionSequence/SimpleDataFormat"
     json[5].should == "<compiled>"
@@ -39,7 +40,7 @@ describe "ruby.cgi は、" do
   it "シンタックスエラーが起きたらそのまま通知する。" do
     src = %Q{File.new("/clean/_cleaned" + filename, w+)}
     page = @agent.post Home + "compile_ruby/error", { :src => src }
-    error_msg = page.body
+    error_msg = URI.decode page.body.gsub(/\+/, " ")
     error_msg.should be_a String
     error_msg.should match /error:1: syntax error/i
   end

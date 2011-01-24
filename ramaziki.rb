@@ -23,6 +23,7 @@ class Ramaziki
   end
 
   def get(page)
+    # page はエスケープずみであること
     filename = to_filename(page)
     if File.exist? filename
       File.read filename
@@ -59,7 +60,7 @@ class Ramaziki
 
 private
   def to_filename(page)
-    File.join @data_dir, URI.encode(page)
+    File.join @data_dir, page
   end
 
   def to_pagename(filename)
