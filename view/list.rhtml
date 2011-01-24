@@ -2,19 +2,23 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <title>Home</title>
+    <title><%= @title %></title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   </head>
   <body>
 	<%= header %>
-    <h1>Rubiki Home</h1>
+    <h1>Page list</h1>
     <%= flashbox %>
-	<p>Rubiki is a wiki server that can run Ruby on browser using HotRuby.</p>
-	<dl>
-		<dt><%= a "Top", "top"  %></dt><dd>Top page (this page)</dd>
-		<dt><%= a "Page list", "list" %></dt><dd>Show page list.</dd>
-		<dt><%= a "Create", "create" %></dt><dd>Create a new page.</dd>
-	</dl>
+	<%= @pager.navigation if @pager.needed? %>
+    <div class="content">
+    <ul>
+		<% @pager.each do |page| %>
+		<li><%= a page, "edit/#{u(page)}" %></li>
+		<% end %>
+    </ul>
+    </div>
+	<%= @pager.navigation if @pager.needed? %>
 	<%= footer %>
   </body>
 </html>
+

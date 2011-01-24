@@ -28,15 +28,15 @@ class RamazikiController < Ramaze::Controller
     :var => 'page',
   }
 
-  def home
+  def index
   end
 
-  def news
+  def changes
     @pages = wiki.list(:sort_by => :modify_time).reverse! 
     @pager = paginate(@pages)
   end
 
-  def index(mode = "")
+  def list
     @pages = wiki.list
     #Ramaze::Log.debug pages.join(', ') 
     @pager = paginate(@pages)
@@ -49,7 +49,7 @@ class RamazikiController < Ramaze::Controller
     page ||= request['page']
     unless page
       flash[:error] = "ページが指定されていません。"
-      Ramaze::Log.debug redirect r(:home)
+      Ramaze::Log.debug redirect r(:index)
     end
     @text = wiki[page]
     @page = url_decode page.to_s
@@ -66,7 +66,7 @@ class RamazikiController < Ramaze::Controller
       if text.empty?
         wiki.delete page_uri
         flash[:notice] = "#{page} を削除しました。"
-        redirect r(:home)
+        redirect r(:index)
       elsif wiki[page_uri] == text
         flash[:notice] = "内容が変更されていません。"
         redirect r(:edit, page_uri)
@@ -77,7 +77,7 @@ class RamazikiController < Ramaze::Controller
       end
     else
         flash[:notice] = "テキストがありません。"
-        redirect r(:show, page_uri)
+        redirect r(:edit, page_uri)
     end
   end
 
