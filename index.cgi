@@ -13,6 +13,7 @@ require_relative 'parser'
 require_relative 'ramaziki_helper'
 
 class RamazikiController < Ramaze::Controller
+  include Ramaze
   map '/'
   engine :Erubis
 
@@ -63,6 +64,7 @@ class RamazikiController < Ramaze::Controller
     
     if request['text']
       text = request['text'].to_s
+      text.force_encoding "UTF-8"
       if text.empty?
         wiki.delete page_uri
         flash[:notice] = "#{page} を削除しました。"
@@ -87,10 +89,10 @@ class RamazikiController < Ramaze::Controller
 
 end
 
-DataDir = "data"
+$dataDir = ARGV[0] || "data"
 
 def wiki
-  @wiki ||= Ramaziki.new(DataDir)
+  @wiki ||= Ramaziki.new($dataDir)
 end
 
 def parser

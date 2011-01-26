@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-require 'ramaziki'
+require_relative 'ramaziki'
 
 describe Ramaziki, "について" do
   DataDir = "data_spec"
@@ -19,8 +19,14 @@ describe Ramaziki, "について" do
     @wiki["charlie"] = "C"
   end
 
+  it "日本語のページ名はエスケープして保存される" do
+    File.exists?(File.join(DataDir, URI.escape("最初"))).should be_true
+    File.exists?(File.join(DataDir, URI.escape("二番目"))).should be_true
+    File.exists?(File.join(DataDir, URI.escape("さいご"))).should be_true
+  end
+
   it "list は文字コード順のページ一覧を返す。" do
-    @wiki.list.should == %w(3番目 Bravo alpha charlie さいご 二番目 最初)
+    @wiki.list.should == %w(3番目 alpha Bravo charlie さいご 二番目 最初)
   end
 
   it "list :sort_by => :modify_time は、更新が新しい順のページ一覧を返す。" do
@@ -55,4 +61,5 @@ describe Ramaziki, "について" do
     @wiki.delete "3番目"
     @wiki["3番目"].should == nil
   end
+  
 end
