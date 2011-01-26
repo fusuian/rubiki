@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
+require 'ramaze'
 require 'uri'
 
 class Ramaziki
+  include Ramaze
 #  DataDir = 'data'
   Version = "0.1"
 
@@ -23,7 +25,7 @@ class Ramaziki
   end
 
   def get(page)
-    # page はエスケープずみであること
+    page = URI.escape page if page.encoding != "US-ASCII"
     filename = to_filename(page)
     if File.exist? filename
       File.read filename
@@ -33,6 +35,7 @@ class Ramaziki
   alias :[] :get
 
   def write(page, data = "")
+    page = URI.escape page if page.encoding != "US-ASCII"
     open(to_filename(page), "wb") { |out|
       out.flock(File::LOCK_EX)
       out.write data
@@ -43,6 +46,7 @@ class Ramaziki
   alias :[]= :write
 
   def delete(page)
+    page = URI.escape page if page.encoding != "US-ASCII"
     File.unlink to_filename(page)
   end
 
