@@ -16,6 +16,8 @@ class RamazikiController < Ramaze::Controller
   include Ramaze
   map '/'
   engine :Erubis
+  layout :default
+  set_layout_except :default => [:edit, :source]
 
   helper :paginate
   helper :ramazikihelper
@@ -30,20 +32,24 @@ class RamazikiController < Ramaze::Controller
   }
 
   def index
+    @title = "Rubiki トップページ"
   end
 
   def changes
+    @title = "ページリスト (新着順)"
     @pages = wiki.list(:sort_by => :modify_time).reverse! 
     @pager = paginate(@pages)
   end
 
   def list
+    @title = "ページリスト (ABC順)"
     @pages = wiki.list
     #Ramaze::Log.debug pages.join(', ') 
     @pager = paginate(@pages)
   end
 
   def create(page)
+    @title = "新しくページをつくる"
   end
 
   def edit(page = nil)
