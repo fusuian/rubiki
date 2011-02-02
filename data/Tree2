@@ -9,8 +9,10 @@ MAX = 5
 p = Point.new(220, 230)
 q = Point.new(220, 10)
 # 樹木の形状
-STEM_RATIO = 0.25
-BRANCH_RATIO = 0.75
+STEM_RATIO = 0.3
+
+
+BRANCH_RATIO = 0.5
 
 
 def draw_line(ctx, a, b)

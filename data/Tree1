@@ -8,8 +8,13 @@ p = Point.new(220, 230)
 q = Point.new(220, 10)
 # 再帰回数
 n = 4
+
 # 樹木の形状
-STEM_RATIO = 0.25
+# バオバブ風？
+#STEM_RATIO = 0.5
+#BRANCH_RATIO = 0.99
+# 広葉樹的？
+STEM_RATIO = 0.3
 BRANCH_RATIO = 0.9
 
 def draw_line(ctx, a, b)
