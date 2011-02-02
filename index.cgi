@@ -17,7 +17,7 @@ class RamazikiController < Ramaze::Controller
   map '/'
   engine :Erubis
   layout :default
-  set_layout_except :default => [:edit, :source]
+  set_layout_except :default => [:edit, :source, :modify]
 
   helper :paginate
   helper :ramazikihelper
@@ -65,28 +65,26 @@ class RamazikiController < Ramaze::Controller
   end
 
   def modify(page_uri)
-    page = URI.decode page_uri.to_s
-    page.force_encoding 'utf-8'
-    
     if request['text']
       text = request['text'].to_s
+      text = URI.decode text
       text.force_encoding "UTF-8"
       if text.empty?
         wiki.delete page_uri
+        page = URI.decode page_uri.to_s
+        page.force_encoding 'utf-8'
         flash[:notice] = "#{page} を削除しました。"
         redirect r(:index)
       elsif wiki[page_uri] == text
-        flash[:notice] = "内容が変更されていません。"
-        redirect r(:edit, page_uri)
+        "内容が変更されていません。"
       else
         wiki[page_uri] = text
-        flash[:notice] = "更新しました。"
-        redirect r(:edit, page_uri)
+        "更新しました。"
       end
     else
-        flash[:notice] = "テキストがありません。"
-        redirect r(:edit, page_uri)
+        "テキストがありません。"
     end
+    
   end
 
   def source(lib)

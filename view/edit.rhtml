@@ -14,7 +14,7 @@
 	<script type="text/javascript" src="/js/HotRuby.js"></script>
 	<script language="javascript" type="text/javascript" src="/editarea/edit_area_full.js"></script>
 	<script language="javascript" type="text/javascript">
-		rubyuri = "http://192.168.2.111:7070";
+		rubyuri = "http://starscream.local:7070";
 		
 		editAreaLoader.init({
 			id: "ruby_src",
@@ -40,6 +40,23 @@
 			hotruby.run(oparray);
 		}
 		
+		function modify() {
+			var url = "/modify/" + escape("<%= @page %>");
+			var src = editAreaLoader.getValue('ruby_src');
+			$.ajax({
+				url : url,
+				data : { text: encodeURIComponent(src) },
+				type : "POST",
+				success : function(response){
+					var hotruby = new HotRuby();
+					hotruby.printDebug(response);
+				},
+				error: function(response){
+					alert("セーブに失敗しました！");
+				}
+			});
+		}
+		
 		$(function(){
 			$("#toggle_opcode").toggle(
 			 function(){
@@ -58,19 +75,19 @@
   </head>
   <body>
 	<%= header %>
-    <h1><%= @title %></h1>
-    <%= flashbox %>
-	
+    <h1><%= h @title %></h1>
+  	<%= flashbox %>
+		
 
 <div id="content">
 <canvas id="canvas" width="432" height="240" style="border: 3px double black;"></canvas>
 <div>Result:</div>
-<div id="debug" class="result"><pre><%= html_escape @error %></pre></div>
+<div id="debug" class="result"><pre><%= h @error %></pre></div>
 <span id="toggle_opcode">バイトコードを見る</span>
 <pre id="opcode">
 </pre>
-<form name="edit" method="POST" action="/modify/<%= u @page %>">
-<input type="submit" accesskey="s" value="Save">
+<form name="edit">
+<button type="button" aaccesskey="s"  onclick="javascript:modify()" value="Save">Save</button>
 <button type="button" accesskey="g" onclick="javascript:compileAndRun()" value="Run">Run</button>
 <br />
 <textarea name="text" id="ruby_src" cols="100" rows="60" ><%= @text %></textarea>
