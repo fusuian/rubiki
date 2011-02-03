@@ -1,0 +1,91 @@
+# 樹木曲線
+# 参考：石立喬さん 再帰プログラムによるフラクタル図形の描画 http://codezine.jp/article/detail/73
+
+require 'Canvas'
+
+# 再帰回数
+$n = 3
+
+# 樹木の形状
+# バオバブ風？
+$stem_ratio = 0.5
+$branch_ratio = 0.99
+# 広葉樹的？
+#$stem_ratio = 0.3
+#$branch_ratio = 0.9
+
+ # 二頂点
+$ox = 220
+$oy = 230
+
+debug = $native.jQuery("#debug")
+debug.text("")
+debug.append(%Q(<div>再帰回数<input type="text" id="recursive" value="#{$n}"></div>))
+debug.append(%Q(<div>枝の比率<input type="text" id="stem" value="#{$stem_ratio}"></div>))
+debug.append(%Q(<div>枝の角度<input type="text" id="branch" value="#{$branch_ratio}"></div>))
+debug.append(%Q(<script language="javascript">function run() { hotruby.runFromScriptTag(rubyuri + "/compile_ruby/script" ) }</script>))
+debug.append(%Q(<div><input type="button" value="開始" onclick="run()"></div>))
+debug.append(<<EOS
+<script type="text/ruby">
+   puts "run"
+   n = $native.jQuery("#recursive").attr("value")
+   puts n
+   n = n.to_f
+   
+   $stem_ratio = $native.jQuery("#stem").attr("value").to_f
+   $branch_ratio = $native.jQuery("#branch").attr("value").to_f
+
+   p = Point.new($ox, $oy)
+   q = Point.new($ox, $oy - n*35)
+
+   canvas = Canvas.new
+   ctx = canvas.context
+   canvas.clear
+   draw_tree ctx, p, q, n
+</script>
+EOS
+)
+
+
+puts "開始ボタンを押してください。"
+
+
+def draw_line(ctx, a, b)
+    ctx.beginPath
+    ctx.moveTo a.x, a.y
+    ctx.lineTo b.x, b.y
+    ctx.stroke
+end
+
+def draw_tree(ctx, a, b, n)
+    xx = b.x - a.x
+    yy = -(b.y - a.y)
+    
+    angle1 = Math.atan(yy/xx) + Math.PI/6
+    angle2 = Math.atan(yy/xx) - Math.PI/6
+    
+    center_length = Math.sqrt(xx*xx + yy*yy)*(1 - $stem_ratio)
+    branch_length = $branch_ratio*center_length
+    
+    sign = (xx >= 0)? 1 : -1
+    
+    c = Point.new( (a.x + $stem_ratio*xx).to_i, (a.y - $stem_ratio*yy).to_i )
+    d = Point.new( c.x + sign*(branch_length*Math.cos(angle1)).to_i,
+                   c.y - sign*(branch_length*Math.sin(angle1)).to_i )
+    e = Point.new( c.x + sign*(branch_length*Math.cos(angle2)).to_i,
+                   c.y - sign*(branch_length*Math.sin(angle2)).to_i )
+    ctx.lineWidth = n*n + 1
+    ctx.strokeStyle = 'burlywood'
+    draw_line ctx, a, c
+    if n <= 0
+        ctx.strokeStyle = 'green'
+        draw_line ctx, c, b
+        draw_line ctx, c, d
+        draw_line ctx, c, e
+    else
+        n -= 1
+        draw_tree ctx, c, b, n
+        draw_tree ctx, c, d, n
+        draw_tree ctx, c, e, n
+    end
+end
