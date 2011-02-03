@@ -1414,7 +1414,7 @@ HotRuby.prototype = {
 		for(var i=0; i < ary.length; i++) {
 			var hoge = ary[i].type;
 			if(ary[i].type == "text/ruby") {
-				this.compileAndRun(url, ary[i].text);
+				this.compileAndRun(url, ary[i].text, true);
 				break;
 			}
 		}
@@ -1996,6 +1996,13 @@ HotRuby.prototype.classes = {
 			return recver;
 		},
 		
+		"to_f" : function(recver) {
+			return parseFloat(recver.__native);
+		},
+
+		"to_i" : function(recver) {
+			return parseInt(recver.__native);
+		},
 
 	},
 	
