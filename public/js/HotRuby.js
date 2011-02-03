@@ -402,8 +402,9 @@ var HotRuby = function() {
 
 	this.loaded_feature = {};
 	
-	this.server_uri = "http://192.168.2.111:7070";
-	
+	//this.server_uri = "http://starscream.local:7070";
+	this.server_uri = "http://www17235u.sakura.ne.jp:7070";
+       
 	this.checkEnv();
 };
 
