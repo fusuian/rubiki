@@ -1,101 +1,112 @@
-<?xml version="1.0" ?>
+<?xml version="1.0"?>
 <% # coding: utf-8 %>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <title><%= @title %></title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
-	<link href="/css/default.css" type="text/css" rel="stylesheet" />
-	<link href="/css/prettify.css" type="text/css" rel="stylesheet" />
-    <link href="/css/jquery.mobile-1.0a2.min.css" type="text/css" rel="stylesheet" />
-
-	<script type="text/javascript" src="/js/jquery-1.4.4.min.js"></script>
-	<script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script>
-
-	<script type="text/javascript" src="/js/HotRuby.js"></script>
-	<script language="javascript" type="text/javascript" src="/editarea/edit_area_full.js"></script>
-	<script language="javascript" type="text/javascript">
-		//rubyuri = "http://starscream.local:7070";
-		rubyuri = "http://www17235u.sakura.ne.jp:7070";
-
-		editAreaLoader.init({
-			id: "ruby_src",
-			syntax: "ruby",
-			language: "ja",
-			display: "later",
-			font_size: 14, 
-			replace_tab_by_spaces: 4,
-			start_highlight: true	// to display with highlight mode on start-up
-		});
-
-		function compileAndRun() {
-			var src = editAreaLoader.getValue('ruby_src');
-			hotruby = new HotRuby();
-			hotruby.compileAndRun(rubyuri + "/compile_ruby/" + escape("<%= @page %>"), src, true);
-		}
-
-		function run() {
-			var opcode = $("#opcode").text();
-			//var unes = unescape(opcode);
-			var oparray = eval("("+ unescape(opcode)+")");
-			hotruby = new HotRuby();
-			hotruby.run(oparray);
-		}
-		
-		function modify() {
-			var url = "/modify/" + escape("<%= @page %>");
-			var src = editAreaLoader.getValue('ruby_src');
-			$.ajax({
-				url : url,
-				data : { text: encodeURIComponent(src) },
-				type : "POST",
-				success : function(response){
-					var hotruby = new HotRuby();
-					hotruby.printDebug(response);
-				},
-				error: function(response){
-					alert("セーブに失敗しました！");
-				}
-			});
-		}
-		
-		$(function(){
-			$("#toggle_opcode").toggle(
-			 function(){
-			 	$("#toggle_opcode").text("バイトコードを隠す");
-			 	$("#opcode").show();
-			 },
-			 function(){
-			 	$("#toggle_opcode").text("バイトコードを見る");
-			 	$("#opcode").hide();
-			 }
-			 );
-			$("#opcode").hide();
-		});
-		
-	</script>
-  </head>
-  <body>
-	<%= header %>
-    <h1><%= h @title %></h1>
-  	<%= flashbox %>
-		
-
-<div id="content">
-<canvas id="canvas" width="432" height="240" style="border: 3px double black;"></canvas>
-<div>Result:</div>
-<div id="debug" class="result"><pre><%= h @error %></pre></div>
-<span id="toggle_opcode">バイトコードを見る</span>
-<pre id="opcode">
+    <head>
+        <title><%= @title %></title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <link href="/css/default.css" type="text/css" rel="stylesheet" />
+        <link href="/css/prettify.css" type="text/css" rel="stylesheet" />
+        <link href="/css/jquery.mobile-1.0a2.min.css" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="/js/jquery-1.4.4.min.js"></script>
+<!--        <script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script> -->
+        <script type="text/javascript" src="/js/HotRuby.js"></script>
+        <script language="javascript" type="text/javascript" src="/editarea/edit_area_full.js"></script>
+        <script language="javascript" type="text/javascript">
+            //rubyuri = "http://starscream.local:7070";
+            rubyuri = "http://www17235u.sakura.ne.jp:7070";
+            
+            editAreaLoader.init({
+                id: "ruby_src",
+                syntax: "ruby",
+                language: "ja",
+                display: "later",
+                font_size: 14,
+                replace_tab_by_spaces: 4,
+                start_highlight: true // to display with highlight mode on start-up
+            });
+            
+            function compileAndRun(){
+                var src = editAreaLoader.getValue('ruby_src');
+                hotruby = new HotRuby();
+                hotruby.compileAndRun(rubyuri + "/compile_ruby/" + escape("<%= @page %>"), src, true);
+            }
+            
+            function run(){
+                var opcode = $("#opcode").text();
+                //var unes = unescape(opcode);
+                var oparray = eval("(" + unescape(opcode) + ")");
+                hotruby = new HotRuby();
+                hotruby.run(oparray);
+            }
+            
+            function modify(){
+                var url = "/modify/" + escape("<%= @page %>");
+                var src = editAreaLoader.getValue('ruby_src');
+                $.ajax({
+                    url: url,
+                    data: {
+                        text: encodeURIComponent(src)
+                    },
+                    type: "POST",
+                    success: function(response){
+                        var hotruby = new HotRuby();
+                        hotruby.printDebug(response);
+                    },
+                    error: function(response){
+                        alert("セーブに失敗しました！");
+                    }
+                });
+            }
+            
+            $(function(){
+                $("#toggle_opcode").toggle(function(){
+                    $("#toggle_opcode").text("バイトコードを隠す");
+                    $("#opcode").show();
+                }, function(){
+                    $("#toggle_opcode").text("バイトコードを見る");
+                    $("#opcode").hide();
+                });
+                $("#opcode").hide();
+            });
+            
+        </script>
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header">
+                <%= header %>
+                <h1><%= h @title %></h1>
+                <%= flashbox %>
+            </div>
+            <div id="content" data-role="content">
+                <canvas id="canvas" width="432" height="240" style="border: 3px double black;">
+                </canvas>
+                <div>
+                    Result:
+                </div>
+                <div id="debug" class="result">
+                    <pre><%= h @error %></pre>
+                </div>
+                <span id="toggle_opcode">バイトコードを見る</span>
+                <pre id="opcode">
 </pre>
-<form name="edit">
-<button type="button" aaccesskey="s"  onclick="javascript:modify()" value="Save">Save</button>
-<button type="button" accesskey="g" onclick="javascript:compileAndRun()" value="Run">Run</button>
-<br />
-<textarea name="text" id="ruby_src" cols="100" rows="60" ><%= @text %></textarea>
-</form>
-</div>
-<%= footer %>
- </body>
+                <form name="edit">
+                    <button type="button" aaccesskey="s" onclick="javascript:modify()" value="Save">
+                        Save
+                    </button>
+                    <button type="button" accesskey="g" onclick="javascript:compileAndRun()" value="Run">
+                        Run
+                    </button>
+                    <br/>
+                    <textarea name="text" id="ruby_src" cols="100" rows="60">
+                        <%= @text %>
+                    </textarea>
+                </form>
+            </div>
+            <div data-role="footer">
+                <%= footer %>
+            </div>
+        </div>
+    </body>
 </html>
