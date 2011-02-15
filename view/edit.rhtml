@@ -13,9 +13,6 @@
         <script type="text/javascript" src="/js/HotRuby.js"></script>
         <script language="javascript" type="text/javascript" src="/editarea/edit_area_full.js"></script>
         <script language="javascript" type="text/javascript">
-            //rubyuri = "http://starscream.local:7070";
-            rubyuri = "http://www17235u.sakura.ne.jp:7070";
-            
             editAreaLoader.init({
                 id: "ruby_src",
                 syntax: "ruby",
@@ -29,7 +26,7 @@
             function compileAndRun(){
                 var src = editAreaLoader.getValue('ruby_src');
                 hotruby = new HotRuby();
-                hotruby.compileAndRun(rubyuri + "/compile_ruby/" + escape("<%= @page %>"), src, true);
+                hotruby.compileAndRun("/compile_ruby/" + escape("<%= @page %>"), src, true);
             }
             
             function run(){

@@ -402,9 +402,6 @@ var HotRuby = function() {
 
 	this.loaded_feature = {};
 	
-	//this.server_uri = "http://starscream.local:7070";
-	this.server_uri = "http://www17235u.sakura.ne.jp:7070";
-       
 	this.checkEnv();
 };
 
@@ -1463,16 +1460,19 @@ HotRuby.prototype = {
 			this.loaded_feature.lib = lib;
 			//this.compileAndRun(url, src, true);
 			var html = $.ajax({
-			    url : "/source/" + lib,
+			    url : "/require/" + lib,
     			async : false, // ←デフォルトはtrue（非同期）
 				success : function(response){
 					if (response.length == 0) {
 						alert("require no data.");
-					} else {
+					}
+					else {
 						response = response.replace(/\+/g, " ");
-						var src = eval("(" + response + ")"); 
-						var uri = hotruby.server_uri + "/compile_ruby/" + lib
-						hotruby.compileAndRun(uri, src, false);
+						var opcode = eval("(" + unescape(response) + ")");
+						if (opcode.length > 0) {
+							hotruby.run(opcode);
+						} else {
+						}
 					}
 				},
 				failure: function(response){
