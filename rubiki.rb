@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-require 'rubygems'
+#require "#{File.dirname(__FILE__)}/vendor/gems/environment"
 require 'ramaze'
 require 'erb'
 require 'json'
@@ -13,8 +13,14 @@ require_relative 'parser'
 require_relative 'ramaziki_helper'
 
 class RamazikiController < Ramaze::Controller
+case `hostname`
+when /Megatron/
   Ruby1_9_0 = "/opt/local/bin/ruby1.9.0"
-  
+#when /starscream/
+when /www17235u/  
+  Ruby1_9_0 = "/usr/local/bin/ruby1.9.0"
+else
+end
   include Ramaze
   map '/'
   engine :Erubis
