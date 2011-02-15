@@ -29,25 +29,18 @@ class RamazikiController < Ramaze::Controller
   Ramaze::Log.level = Innate::LogHub::DEBUG
   Ramaze::Log.debug Ramaze::Log.level
 
-  trait :paginate => {
-    :limit => 20,
-    :var => 'page',
-  }
-
   def index
     @title = "Rubiki トップページ"
   end
 
   def changes
     @title = "ページリスト (新着順)"
-    @pages = wiki.list(:sort_by => :modify_time).reverse! 
-    @pager = paginate(@pages)
+    @pager = wiki.list(:sort_by => :modify_time).reverse! 
   end
 
   def list
     @title = "ページリスト (ABC順)"
-    @pages = wiki.list
-    @pager = paginate(@pages)
+    @pager = wiki.list
   end
 
   def create(page)
