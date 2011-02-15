@@ -23,7 +23,7 @@ debug.text("")
 debug.append(%Q(<div>再帰回数<input type="text" id="recursive" value="#{$n}"></div>))
 debug.append(%Q(<div>枝の比率<input type="text" id="stem" value="#{$stem_ratio}"></div>))
 debug.append(%Q(<div>枝の角度<input type="text" id="branch" value="#{$branch_ratio}"></div>))
-debug.append(%Q(<script language="javascript">function run() { hotruby.runFromScriptTag(rubyuri + "/compile_ruby/script" ) }</script>))
+debug.append(%Q(<script language="javascript">function run() { hotruby.runFromScriptTag("/compile_ruby/script" ) }</script>))
 debug.append(%Q(<div><input type="button" value="開始" onclick="run()"></div>))
 debug.append(<<EOS
 <script type="text/ruby">

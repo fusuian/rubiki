@@ -9,7 +9,7 @@
         <link href="/css/prettify.css" type="text/css" rel="stylesheet" />
         <link href="/css/jquery.mobile-1.0a2.min.css" type="text/css" rel="stylesheet" />
         <script type="text/javascript" src="/js/jquery-1.4.4.min.js"></script>
-<!--        <script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script> -->
+        <script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script>
         <script type="text/javascript" src="/js/HotRuby.js"></script>
         <script language="javascript" type="text/javascript" src="/editarea/edit_area_full.js"></script>
         <script language="javascript" type="text/javascript">
@@ -24,6 +24,7 @@
             });
             
             function compileAndRun(){
+				$.mobile.changePage("#run");
                 var src = editAreaLoader.getValue('ruby_src');
                 hotruby = new HotRuby();
                 hotruby.compileAndRun("/compile_ruby/" + escape("<%= @page %>"), src, true);
@@ -70,13 +71,32 @@
         </script>
     </head>
     <body>
-        <div data-role="page">
-            <div data-role="header">
-                <%= header %>
-                <h1><%= h @title %></h1>
-                <%= flashbox %>
-            </div>
+        <div data-role="page" id="src" data-theme="e">
+      	    <div data-role="header">
+              <h1><%= h @title %>の編集</h1>
+              <button type="button" accesskey="s" onclick="javascript:modify()" value="Save">
+                  保存
+              </button>
+              <button type="button" accesskey="g" onclick="javascript:compileAndRun()" value="Run">
+                  実行
+              </button>
+		    </div>
+			<%= navbar %>
+
             <div id="content" data-role="content">
+                <%= flashbox %>
+                <textarea name="text" id="ruby_src"><%= @text %></textarea>
+            </div>
+        </div>
+
+        <div data-role="page" id="run" data-theme="e">
+      	    <div data-role="header">
+        	  <h1><%= h @title %> の実行</h1>
+			  <a href="#src">編集</a>
+		    </div>
+			<%= navbar %>
+            <div id="content" data-role="content">
+                <%= flashbox %>
                 <canvas id="canvas" width="432" height="240" style="border: 3px double black;">
                 </canvas>
                 <div>
@@ -87,23 +107,9 @@
                 </div>
                 <span id="toggle_opcode">バイトコードを見る</span>
                 <pre id="opcode">
-</pre>
-                <form name="edit">
-                    <button type="button" aaccesskey="s" onclick="javascript:modify()" value="Save">
-                        Save
-                    </button>
-                    <button type="button" accesskey="g" onclick="javascript:compileAndRun()" value="Run">
-                        Run
-                    </button>
-                    <br/>
-                    <textarea name="text" id="ruby_src" cols="100" rows="60">
-                        <%= @text %>
-                    </textarea>
-                </form>
-            </div>
-            <div data-role="footer">
-                <%= footer %>
+				</pre>
             </div>
         </div>
+
     </body>
 </html>

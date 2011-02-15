@@ -12,21 +12,18 @@
     <link href="/css/jquery.mobile-1.0a2.min.css" type="text/css" rel="stylesheet" />
 
 	<script type="text/javascript" src="/js/jquery-1.4.4.min.js"></script>
-	<!-- <script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script> -->
+	<script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script>
 
   </head>
   <body>
-  <div data-role="page">
+  <div data-role="page" data-theme="e">
       <div data-role="header">
-          <%= header %>
           <h1><%= h @title %></h1>
-          <%= flashbox %>
       </div>
+      <%= navbar %>
       <div id="content" data-role="content">
+          <%= flashbox %>
           <%= @content %>
-      </div>
-      <div data-role="footer">
-          <%= footer %>
       </div>
   </div>
   </body>

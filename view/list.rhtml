@@ -1,8 +1,6 @@
-	<%= @pager.navigation if @pager.needed? %>
-    <ul>
+	 <ul data-filter="true" data-role="listview" data-theme="c" data-inset="true">
 		<% @pager.each do |page| %>
 		<li><%= a page, "edit/#{u(page)}" %></li>
 		<% end %>
     </ul>
-	<%= @pager.navigation if @pager.needed? %>
 
