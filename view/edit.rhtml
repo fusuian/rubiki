@@ -93,6 +93,9 @@
       	    <div data-role="header">
         	  <h1><%= h @title %> の実行</h1>
 			  <a href="#src">編集</a>
+              <button type="button" accesskey="g" onclick="javascript:compileAndRun()" value="Run">
+                  実行
+              </button>
 		    </div>
 			<%= navbar %>
             <div id="content" data-role="content">
