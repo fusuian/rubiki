@@ -4,16 +4,18 @@
 	<head>
 	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<title>HotRuby Unit Test</title>
+        <link href="/css/jquery.mobile-1.0a2.min.css" type="text/css" rel="stylesheet" />
+
 		<script language="JavaScript" type="text/javascript" src="/jsUnit/jsUnitCore.js"></script>
 		<script type="text/javascript" src="/js/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script>
+        <script type="text/javascript" src="/js/printf.js"></script>
 		<script type="text/javascript" src="/js/HotRuby.js"></script>
 		<script language="JavaScript" type="text/javascript">
-		// rubyuri = "http://localhost:7070";
-		rubyuri = "http://192.168.2.111:7070";
 		
 		function compileAndRun(test, src) {
 			hotruby = new HotRuby();
-			hotruby.compileAndRun(rubyuri + "/compile_ruby/" + escape(test), src, false);
+			hotruby.compileAndRun("/compile_ruby/" + escape(test), src, false);
 		}
 		
 		function setUp(){
@@ -102,7 +104,8 @@
 			<div id="debug" class="result"></div>
 			<pre id="opcode"></pre>
 		</div>
-		<textarea id = "arguments">
+		<div>
+		<textarea id = "arguments" cols="80" rows="10">
 			class Hoge
 				attr_reader :a
 				attr_reader :b
@@ -113,16 +116,20 @@
 			hoge = Hoge.new(10, 200)
 			puts "#{hoge.a}, #{hoge.b}"
 		</textarea>
-		
-		<textarea id = "method_arguments">
+		</div>
+
+		<div>
+		<textarea id = "method_arguments" cols="80" rows="10">
 			def hoge(a, b)
 				 c, d = a, b
 				 puts "#{c}, #{d}"
 			end
 			hoge 10, 200
 		</textarea>
-		
-		<textarea id="multiple_assignment">
+		</div>
+
+		<div>		
+		<textarea id="multiple_assignment" cols="80" rows="10">
 			a, b = 1, 2
 			puts "#{a},#{b}|"
 			a, b, c = 1, 2, 3
@@ -130,8 +137,10 @@
 			a, b, c, d = 1, 2, 3, 4
 			puts "#{a},#{b},#{c},#{d}"
 		</textarea>
-		
-		<textarea id="classvar">
+		</div>
+
+		<div>
+		<textarea id="classvar" cols="80" rows="10">
 			class Foo
   				@@foo = :foo
   
@@ -150,8 +159,10 @@
 			f2 = Foo.new
 			puts f2.foo
 		</textarea>
-		
-		<textarea id="hash_symbol">
+		</div>
+
+		<div>
+		<textarea id="hash_symbol" cols="80" rows="10">
 			$foo = {}
 			$foo[:bar] = true
 			puts $foo[:bar]
@@ -162,16 +173,20 @@
   				puts "NG"
 			end
 		</textarea>
-		
-		<textarea id="timetime">
+		</div>
+
+		<div>
+		<textarea id="timetime" cols="80" rows="10">
 			3.times do |y|
   				3.times do |x|
     				puts "#{x}, #{y}|"
   				end
 			end
 		</textarea>
-		
-		<textarea id="sprintf">
+		</div>
+
+		<div>
+		<textarea id="sprintf" cols="80" rows="10">
 			puts "%4d|"
 			puts sprintf("%d|", 117.14) # 117
 			puts sprintf("%4d|", 117.14) # 117
@@ -180,28 +195,35 @@
 			puts sprintf("#%02x|", 117.14) # #75
 			puts sprintf("[%%%s]|", "string") # [%string]
 		</textarea>
-		
-		<textarea id="upto_step">
+		</div>
+
+		<div>
+		<textarea id="upto_step" cols="80" rows="10">
 			10.upto(12) do |x|
   				20.step(22) do |y|
      				puts "#{x},#{y}|"
   				end
 			end
 		</textarea>
-		
-		<textarea id="default_arg">
+		</div>
+
+		<div>
+		<textarea id="default_arg" cols="80" rows="10">
 			def hoge(a = 0)
 				a*2
 			end
 			puts "#{hoge(2)}|" 
 			#puts "#{hoge}|" 
 		</textarea>
-		
-		<textarea id="pow">
+		</div>
+
+		<div>
+		<textarea id="pow" cols="80" rows="10">
 			puts "#{2**2}|"
 			puts "#{3**3}|"
 			puts "#{5**3}|"
 			puts "#{1**0}|"
 		</textarea>
+		</div>
 	</body>
 </html>
