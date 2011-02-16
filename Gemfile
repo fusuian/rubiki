@@ -1,0 +1,2 @@
+gem "ramaze"
+gem "erubis"

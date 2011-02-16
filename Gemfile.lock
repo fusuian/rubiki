@@ -1,0 +1,17 @@
+GEM
+  specs:
+    abstract (1.0.0)
+    erubis (2.6.6)
+      abstract (>= 1.0.0)
+    innate (2010.07)
+      rack (>= 1.1.0)
+    rack (1.2.1)
+    ramaze (2010.06.18)
+      innate (>= 2010.03)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  erubis
+  ramaze
