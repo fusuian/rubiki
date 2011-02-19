@@ -1178,7 +1178,9 @@ HotRuby.prototype = {
 	
 	//// エディタの特定行にジャンプ。
 	gotoLine: function(lineNo) {
-		editAreaLoader.execCommand("ruby_src", "go_to_line", "" + lineNo);
+		if (typeof(editAreaLoader) != 'undefined') {
+			editAreaLoader.execCommand("ruby_src", "go_to_line", "" + lineNo);
+		}
 	},
 
 	//// 整数decをn進数の文字列に変換。	

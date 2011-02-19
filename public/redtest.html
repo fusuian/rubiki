@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Red Test</title>
+
+        <link href="/css/jquery.mobile-1.0a2.min.css" type="text/css" rel="stylesheet" />
+
+		<script language="JavaScript" type="text/javascript" src="/jsUnit/jsUnitCore.js"></script>
+		<script type="text/javascript" src="/js/jquery-1.4.4.min.js"></script>
+        <script type="text/javascript" src="/js/jquery.mobile-1.0a2.min.js"></script>
+        <script type="text/javascript" src="/js/printf.js"></script>
+		<script type="text/javascript" src="/js/HotRuby.js"></script>
+		<script language="JavaScript" type="text/javascript">
+		
+		function compileAndRun(test, src) {
+			hotruby = new HotRuby();
+			hotruby.compileAndRun("/compile_ruby/" + escape(test), src, false);
+		}
+		
+		function setUp(){
+    	}
+		
+    	function tearDown() {
+			$("#debug").empty();
+    	}
+		
+		// テストコードを記述
+		function testHelloWorld() {
+			compileAndRun("testHelloWorld", "puts %Q(Hello, World!)");
+  			assertEquals('Hello, World!', $("#debug").text());
+		}
+
+		</script>
+	</head>
+	<body>
+		<h1>レッドテスト</h1>
+		<p>まだ動かないテストばかりなので、実行すると必ず失敗して赤くなる。</p>
+		<p>動いたものから通常のテストに移す。</p>
+		<div id="content">
+			<div>Result:</div>
+            <div id="debug" class="result"></div>
+			<pre id="opcode"></pre>
+		</div>
+
+		<h2>デフォルト引数のテスト default_arg</h2>
+		<div>
+		<textarea id="default_arg" cols="80" rows="10">
+			def hoge(a = 0)
+				a*2
+			end
+			puts "#{hoge(2)}|" 
+			#puts "#{hoge}|" # エラー
+		</textarea>
+        <button type="button" onclick="javascript:testDefaultArg()" value="Run">
+        	実行
+        </button>
+		<script language="JavaScript">
+		function testDefaultArg() {
+			var src = $("#default_arg").text();
+			compileAndRun("test", src);
+			assertEquals("2|2|", $("#debug").text());
+		}
+		</script>
+		</div>
+
+	</body>
+</html>

@@ -19,11 +19,10 @@
 		}
 		
 		function setUp(){
-  			this.debug = $("#debug");
     	}
 		
     	function tearDown() {
-			this.debug.empty();
+			$("#debug").empty();
     	}
 				
 		// テストコードを記述
@@ -31,70 +30,6 @@
 			compileAndRun("testHelloWorld", "puts %Q(Hello, World!)");
   			assertEquals('Hello, World!', $("#debug").text());
 		}
-
-		function testArguments() {
-			var src = $("#arguments").text(); 
-			compileAndRun("test", src);
-  			assertEquals('10, 200', $("#debug").text());
-		}
-		
-		function testMethodArguments() {
-			var src = $("#method_arguments").text(); 
-			compileAndRun("test", src);
-  			assertEquals('10, 200', $("#debug").text());
-		}
-		
-		function testMultipleAssignment() {
-			var src = $("#multiple_assignment").text(); 
-			compileAndRun("test", src);
-  			assertEquals('1,2|1,2,3|1,2,3,4', $("#debug").text());
-		}
-
-		function testClassVar() {
-			var src = $("#classvar").text(); 
-			compileAndRun("test", src);
-			var divs = $("#debug > div")
-			assertEquals(2, divs.length);
-  			assertEquals('foobar', divs.text());
-		}
-		
-		function testHashSymbol(){
-			var src = $("#hash_symbol").text();
-			compileAndRun("test", src);
-			assertEquals("truenilOK", $("#debug").text());
-		}
-		
-		function testTimeTime(){
-			var src = $("#timetime").text();
-			compileAndRun("test", src);
-			assertEquals("0, 0|1, 0|2, 0|0, 1|1, 1|2, 1|0, 2|1, 2|2, 2|", $("#debug").text());
-		}
-
-		function testUptoStep(){
-			var src = $("#upto_step").text();
-			compileAndRun("test", src);
-			assertEquals("10,20|10,21|10,22|11,20|11,21|11,22|12,20|12,21|12,22|", $("#debug").text());
-		}
-
-		function testSprintf(){
-			var src = $("#sprintf").text();
-			compileAndRun("test", src);
-			assertEquals("%4d|117| 117|0117|0075|#75|[%string]|", $("#debug").text());
-		}
-
-//		pending		
-//		function testDefaultArg() {
-//			var src = $("#default_arg").text();
-//			compileAndRun("test", src);
-//			assertEquals("2|2|", $("#debug").text());
-//		}
-				
-		function testPow() {
-			var src = $("#pow").text();
-			compileAndRun("test", src);
-			assertEquals("4|27|125|1|", $("#debug").text());
-		}
-
 		</script>
 	</head>
 	<body>
@@ -104,6 +39,8 @@
 			<div id="debug" class="result"></div>
 			<pre id="opcode"></pre>
 		</div>
+		
+		<h2>引数のテスト arguments</h2>
 		<div>
 		<textarea id = "arguments" cols="80" rows="10">
 			class Hoge
@@ -116,8 +53,16 @@
 			hoge = Hoge.new(10, 200)
 			puts "#{hoge.a}, #{hoge.b}"
 		</textarea>
+		<script language="JavaScript">
+			function testArguments() {
+			var src = $("#arguments").text(); 
+			compileAndRun("test", src);
+  			assertEquals('10, 200', $("#debug").text());
+		}
+		</script>
 		</div>
 
+		<h2>メソッド引数のテスト method_arguments</h2>
 		<div>
 		<textarea id = "method_arguments" cols="80" rows="10">
 			def hoge(a, b)
@@ -126,8 +71,16 @@
 			end
 			hoge 10, 200
 		</textarea>
+		<script language="JavaScript">
+		function testMethodArguments() {
+			var src = $("#method_arguments").text(); 
+			compileAndRun("test", src);
+  			assertEquals('10, 200', $("#debug").text());
+		}
+		</script>
 		</div>
 
+		<h2>多重代入のテスト multiple_assignment</h2>
 		<div>		
 		<textarea id="multiple_assignment" cols="80" rows="10">
 			a, b = 1, 2
@@ -137,8 +90,16 @@
 			a, b, c, d = 1, 2, 3, 4
 			puts "#{a},#{b},#{c},#{d}"
 		</textarea>
+		<script language="JavaScript">
+		function testMultipleAssignment() {
+			var src = $("#multiple_assignment").text(); 
+			compileAndRun("test", src);
+  			assertEquals('1,2|1,2,3|1,2,3,4', $("#debug").text());
+		}
+		</script>
 		</div>
 
+		<h2>クラス変数のテスト classvar</h2>
 		<div>
 		<textarea id="classvar" cols="80" rows="10">
 			class Foo
@@ -159,8 +120,18 @@
 			f2 = Foo.new
 			puts f2.foo
 		</textarea>
+		<script language="JavaScript">
+		function testClassVar() {
+			var src = $("#classvar").text(); 
+			compileAndRun("test", src);
+			var divs = $("#debug > div")
+			assertEquals(2, divs.length);
+  			assertEquals('foobar', divs.text());
+		}
+		</script>
 		</div>
 
+		<h2>シンボルをキーにしたハッシュのテスト hash_symbol</h2>
 		<div>
 		<textarea id="hash_symbol" cols="80" rows="10">
 			$foo = {}
@@ -173,8 +144,16 @@
   				puts "NG"
 			end
 		</textarea>
+		<script language="JavaScript">
+		function testHashSymbol(){
+			var src = $("#hash_symbol").text();
+			compileAndRun("test", src);
+			assertEquals("truenilOK", $("#debug").text());
+		}
+		</script>
 		</div>
 
+		<h2>二重timeのテスト timetime</h2>
 		<div>
 		<textarea id="timetime" cols="80" rows="10">
 			3.times do |y|
@@ -183,8 +162,16 @@
   				end
 			end
 		</textarea>
+		<script language="JavaScript">
+		function testTimeTime(){
+			var src = $("#timetime").text();
+			compileAndRun("test", src);
+			assertEquals("0, 0|1, 0|2, 0|0, 1|1, 1|2, 1|0, 2|1, 2|2, 2|", $("#debug").text());
+		}
+		</script>
 		</div>
 
+		<h2>sprintfのテスト sprintf</h2>
 		<div>
 		<textarea id="sprintf" cols="80" rows="10">
 			puts "%4d|"
@@ -195,8 +182,16 @@
 			puts sprintf("#%02x|", 117.14) # #75
 			puts sprintf("[%%%s]|", "string") # [%string]
 		</textarea>
+		<script language="JavaScript">
+		function testSprintf(){
+			var src = $("#sprintf").text();
+			compileAndRun("test", src);
+			assertEquals("%4d|117| 117|0117|0075|#75|[%string]|", $("#debug").text());
+		}
+		</script>
 		</div>
 
+		<h2>二重ループのテスト upto_step</h2>
 		<div>
 		<textarea id="upto_step" cols="80" rows="10">
 			10.upto(12) do |x|
@@ -205,18 +200,17 @@
   				end
 			end
 		</textarea>
+		<script language="JavaScript">
+		function testUptoStep(){
+			var src = $("#upto_step").text();
+			compileAndRun("test", src);
+			assertEquals("10,20|10,21|10,22|11,20|11,21|11,22|12,20|12,21|12,22|", $("#debug").text());
+		}
+		</script>
 		</div>
 
-		<div>
-		<textarea id="default_arg" cols="80" rows="10">
-			def hoge(a = 0)
-				a*2
-			end
-			puts "#{hoge(2)}|" 
-			#puts "#{hoge}|" 
-		</textarea>
-		</div>
 
+		<h2>**演算子のテスト pow</h2>
 		<div>
 		<textarea id="pow" cols="80" rows="10">
 			puts "#{2**2}|"
@@ -224,6 +218,13 @@
 			puts "#{5**3}|"
 			puts "#{1**0}|"
 		</textarea>
+		<script language="JavaScript">
+		function testPow() {
+			var src = $("#pow").text();
+			compileAndRun("test", src);
+			assertEquals("4|27|125|1|", $("#debug").text());
+		}
+		</script>
 		</div>
 	</body>
 </html>
