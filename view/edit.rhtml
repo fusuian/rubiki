@@ -24,27 +24,11 @@
                 start_highlight: true // to display with highlight mode on start-up
             });
             
-            function compileAndRun(){
-				$.mobile.changePage("#run");
-                var src = editAreaLoader.getValue('ruby_src');
-                hotruby = new HotRuby();
-                hotruby.compileAndRun("/compile_ruby/" + escape("<%= @page %>"), src, true);
-            }
-            
             function run(){
                 var opcode = $("#opcode").text();
                 var oparray = eval("(" + unescape(opcode) + ")");
                 hotruby = new HotRuby();
                 hotruby.run(oparray);
-            }
-            
-            function bytecode(){
-				$.mobile.changePage("#bytecode");
-                var opcode = $("#opcode").text();
-                var oparray = eval("(" + unescape(opcode) + ")");
-				var formatter = new Json.Formatter(oparray);
-				$("#opcode_for_man").text(formatter.value);
-				fit_textarea("#opcode_for_man");
             }
             
             function modify(){
@@ -88,6 +72,18 @@
 			
 			$(function(){
 				fit_textarea("#ruby_src");
+				$("#bytecode").live("pageshow", function() {
+	                var opcode = $("#opcode").text();
+    	            var oparray = eval("(" + unescape(opcode) + ")");
+					var formatter = new Json.Formatter(oparray);
+					$("#opcode_for_man").text(formatter.value);
+					fit_textarea("#opcode_for_man");	
+				});
+				$("#run").live("pageshow", function() {
+	                var src = editAreaLoader.getValue('ruby_src');
+    	            hotruby = new HotRuby();
+        	        hotruby.compileAndRun("/compile_ruby/" + escape("<%= @page %>"), src, true);		
+				});			
 			}
 			);
 			
@@ -100,9 +96,7 @@
               <button type="button" accesskey="s" onclick="javascript:modify()" value="Save">
                   保存
               </button>
-              <button type="button" accesskey="g" onclick="javascript:compileAndRun()" value="Run">
-                  実行
-              </button>
+			  <a href="#run">実行</a>
 		    </div>
 			<%= navbar %>
 
@@ -116,7 +110,7 @@
       	    <div data-role="header">
         	  <h1><%= h @title %> の実行</h1>
 			  <a href="#edit">編集</a>
-			  <button type="button" onclick="bytecode()">バイトコード</button>
+			  <a href="#bytecode">バイトコード</a>
               <button type="button" accesskey="g" onclick="run()">
                   実行
               </button>
