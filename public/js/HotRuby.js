@@ -1353,6 +1353,10 @@ HotRuby.prototype.classes = {
 
 		"^" : function(recver, args) {
 			return args[0] ? false : true;
+		},
+		
+		"to_str" : function() {
+			return this.createRubyString("true");
 		}
 	},
 
@@ -1367,10 +1371,19 @@ HotRuby.prototype.classes = {
 
 		"^" : function(recver, args) {
 			return args[0] ? true : false;
+		},
+		
+		"to_str" : function() {
+			return this.createRubyString("false");
 		}
+
 	},
 
 	"NilClass" : {
+		"to_str" : function() {
+			return this.createRubyString("");
+		}
+
 	},
 
 	"NativeEnviornment" : {
