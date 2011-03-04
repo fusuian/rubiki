@@ -18,6 +18,12 @@
 			hotruby.compileAndRun("/compile_ruby/" + escape(test), src, false);
 		}
 		
+		function runAndTest(id, result) {
+			var src = $(id).text();
+			compileAndRun("test", src);
+			assertEquals(result, $("#debug").text());
+		}
+
 		function setUp(){
     	}
 		
@@ -30,14 +36,52 @@
 			compileAndRun("testHelloWorld", "puts %Q(Hello, World!)");
   			assertEquals('Hello, World!', $("#debug").text());
 		}
+		
+		function clearDebug() {
+			$("#debug").text("");
+		}
 		</script>
 	</head>
 	<body>
 		<div id="content">
-			<canvas id="canvas" width="432" height="240" style="border: 3px double black;"></canvas>
 			<div>Result:</div>
 			<div id="debug" class="result"></div>
+        <button type="button" onclick="clearDebug()" value="Run">
+        	クリア
+        </button>
 			<pre id="opcode"></pre>
+		</div>
+		
+		<h2>Array#inject のテスト</h2>
+		<div>
+		<textarea id="arrayinject" cols="80" rows="10">
+		puts [1,2,3,4,5].inject(0) {|result, item| result += item }
+		</textarea>
+		<script language="JavaScript">
+		function testArrayInject() {
+			runAndTest("#arrayinject", "15")
+		}
+		</script>
+        <button type="button" onclick="testArrayInject()" value="Run">
+        	テスト
+        </button>
+		</div>
+		
+		<h2>Array#- のテスト</h2>
+		<div>
+		<textarea id="arraysub" cols="80" rows="10">
+		foo = [1,2,3,4,5]
+		bar = [2,4,6]
+		puts foo-bar
+		</textarea>
+		<script language="JavaScript">
+		function testArraySub() {
+			runAndTest("#arraysub", "135")
+		}
+		</script>
+        <button type="button" onclick="testArraySub()" value="Run">
+        	テスト
+        </button>
 		</div>
 		
 		<h2>引数のテスト arguments</h2>
@@ -210,7 +254,7 @@
 		</div>
 
 
-		<h2>**演算子のテスト pow</h2>
+		<h2>演算子のテスト pow</h2>
 		<div>
 		<textarea id="pow" cols="80" rows="10">
 			puts "#{2**2}|"
@@ -226,5 +270,43 @@
 		}
 		</script>
 		</div>
+
+		<h2>String#[] のテスト</h2>
+		<div>
+		<textarea id="string" cols="80" rows="10">
+		str = "abcde"
+		puts "[#{str[0,3]}|"
+		puts "#{str[2,2]}|"
+		puts "#{str[3,5]}]"
+		puts "[#{str[-1,1]}|"
+		puts "#{str[0,-1]}]"
+		</textarea>
+		<script language="JavaScript">
+		function testString() {
+			runAndTest("#string", "[abc|cd|de][e|]")
+		}
+		</script>
+        <button type="button" onclick="testString()" value="Run">
+        	テスト
+        </button>
+
+		<h2>boolean のテスト</h2>
+		<div>
+		<textarea id="boolean" cols="80" rows="10">
+		str = "abcde"
+		puts "#{true}|"
+		puts "#{false}|"
+		puts "#{nil}|"
+		</textarea>
+		<script language="JavaScript">
+		function testBoolean() {
+			runAndTest("#boolean", "true|false||")
+		}
+		</script>
+        <button type="button" onclick="testBoolean()" value="Run">
+        	テスト
+        </button>
+		</div>
+		
 	</body>
 </html>
