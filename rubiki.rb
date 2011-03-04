@@ -15,10 +15,11 @@ require_relative 'ramaziki_helper'
 class RamazikiController < Ramaze::Controller
 case `hostname`
 when /Megatron/
-  Ruby1_9_0 = "/opt/local/bin/ruby1.9.0"
+  RubyBin = "/opt/local/bin/ruby1.9.0"
+  # RubyBin = "/Users/fusuian/.rvm/rubies/ruby-1.9.2-p136/bin/ruby"
 #when /starscream/
 when /www17235u/  
-  Ruby1_9_0 = "/usr/local/bin/ruby1.9.0"
+  RubyBin = "/usr/local/bin/ruby1.9.0"
 else
 end
   include Ramaze
@@ -127,7 +128,7 @@ end
 
   private
   def compile(page, src)
-    IO.popen("#{Ruby1_9_0} ./compile.rb '#{page}' ", 'r+') do |io|
+    IO.popen("#{RubyBin} ./compile.rb '#{page}' ", 'r+') do |io|
       io.puts src
       io.close_write
       io.readlines
