@@ -1937,6 +1937,11 @@ HotRuby.prototype.classes = {
 		
 		"to_f" : function(recver) {
 			return recver.__instanceVars.date.getTime() / 1000;
+		}, 
+		
+		"-" : function(recver, args) {
+			var other = args[0];
+			return (recver.__instanceVars.date.getTime() - other.__instanceVars.date.getTime())/1000;
 		}
 	}, 
 	
