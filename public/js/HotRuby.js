@@ -1714,7 +1714,45 @@ HotRuby.prototype.classes = {
 		
 		"shift" : function(recver) {
 			return recver.__native.shift();
-		}
+		},
+		
+		"choice" : function(recver) {
+			var n = Math.floor(Math.random()*recver.__native.length);
+			return recver.__native[n];
+		},
+		
+		"-" : function(recver, args) {
+			var other = args[0].__native;
+			var index;
+			var result = jQuery.grep(recver.__native, function(val, i) {
+				var r = jQuery.inArray(val, other);
+				return r == -1;
+			});
+			return this.createRubyArray(result);
+		},
+		
+		"inject" : function(recver, args, sf) {
+			var result = args[0]; // TODO: 引数を省略するとself.first
+			for (var i = 0; i < recver.__native.length; i++) {
+				var obj = recver.__native[i];
+				this.invokeMethod(args[1], "yield", [result, obj], sf, 0, false);
+				result = sf.stack[sf.sp--];
+			}
+			switch (typeof(result)) {
+				case "number":
+					break;
+				case "string":
+					result = this.createRubyString(result);
+					break;
+				default:
+					this.printDebug("inject is not supported "+ typeof(result));
+					break;			
+			}
+			return result;
+		},
+		
+
+		
 	},
 	
 	"Hash" : {
