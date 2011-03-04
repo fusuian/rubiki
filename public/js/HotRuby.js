@@ -162,7 +162,8 @@ HotRuby.prototype = {
 		}
 		try {
 			// Run the mainLoop
-			this.mainLoop(opcode[11], sf);
+			this.mainLoop(opcode[11], sf);	// for Ruby 1.9.0
+			//this.mainLoop(opcode[13], sf);	// for Ruby 1.9.2
 			
 			// Copy the stack to the parent stack frame
 			if (parentSF != null) {
@@ -181,6 +182,9 @@ HotRuby.prototype = {
 			this.printDebug(e);
 			throw e;		
 		}
+
+    	//this.invokeMethod(sf.stack[0], "inspect", [], sf, 0, true);
+    	return sf.stack[0];
 	},
 	
 	/**
@@ -220,6 +224,30 @@ HotRuby.prototype = {
 			
 			//console.trace("cmd = " + cmd[0] + ", sp = " + sf.sp);
 			switch (cmd[0]) {
+				/* // Ruby 1.9.2 のバイトコード：保留
+				case "trace" :
+					break;
+				case "putspecialobject" :
+					switch (cmd[1]) {
+						case 1:
+							//sf.stack[sf.sp++] = "frozencore";
+							break;
+						case 2:
+							sf.stack[sf.sp++] = sf.cbaseObj;
+							break;
+						case 3:
+							//TODO
+							break;
+						default:
+							//TODO
+							break;
+					}
+					//sf.stack[sf.sp++] = sf.classObj;
+					break;
+				case "putiseq" :
+					sf.stack[sf.sp++] = this.createRubyISeq(cmd[1]);
+					break;
+					*/
 				case "jump" :
 					ip = opcode.label2ip[cmd[1]];
 					break;
@@ -975,6 +1003,22 @@ HotRuby.prototype = {
 	},
 	
 	/**
+	 * opcode -> Ruby Proc
+	 * @param {Array} opcode
+	 * @param {HotRuby.StackFrame} sf
+	 * @return {Object} Proc
+	 */
+	/* // Ruby 1.9.2 対応：保留
+	createRubyISeq : function(opcode, sf) {
+		return {
+			__opcode : opcode,
+			__className : "Iseq",
+			__parentStackFrame : sf
+		};
+	},
+	*/
+		
+	/**
 	 * JavaScript Array -> Ruby Array
 	 * @param {Array} ary
 	 * @return {Array}
@@ -1338,7 +1382,25 @@ HotRuby.prototype.classes = {
 			error.name    = "BreakPointError";
 			error.message = "BreakPoint.";
 			throw error;  
+		},
+		
+		/* // Ruby 1.9.2 対応：保留
+		"core#define_method": function(recver, args, sf){
+			var n = args[0];
+			var iseq = sf.stack[sf.sp--].__opcode;
+			var method = sf.stack[sf.sp--].__native;
+			var obj = sf.stack[sf.sp--];
+			//if (sf.cbaseObj != null) 
+			//	obj = sf.cbaseObj;
+			//if (obj == null || obj == this.nilObj) {
+			//	sf.classObj[method] = iseq;
+			//} else {
+				if (!("__methods" in obj)) 
+					obj.__methods = {};
+				obj.__methods[method] = iseq;
+			//}
 		}
+		*/
 
 	},
 
