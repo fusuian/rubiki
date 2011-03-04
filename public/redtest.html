@@ -18,6 +18,12 @@
 			hotruby.compileAndRun("/compile_ruby/" + escape(test), src, false);
 		}
 		
+		function runAndTest(id, result) {
+			var src = $(id).text();
+			compileAndRun("test", src);
+			assertEquals(result, $("#debug").text());
+		}
+
 		function setUp(){
     	}
 		
@@ -52,9 +58,6 @@
 			puts "#{hoge(2)}|" 
 			#puts "#{hoge}|" # エラー
 		</textarea>
-        <button type="button" onclick="javascript:testDefaultArg()" value="Run">
-        	実行
-        </button>
 		<script language="JavaScript">
 		function testDefaultArg() {
 			var src = $("#default_arg").text();
@@ -62,7 +65,11 @@
 			assertEquals("2|2|", $("#debug").text());
 		}
 		</script>
+        <button type="button" onclick="testDefaultArg()" value="Run">
+        	実行
+        </button>
 		</div>
+
 
 	</body>
 </html>
