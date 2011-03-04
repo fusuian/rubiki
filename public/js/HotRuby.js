@@ -1630,15 +1630,20 @@ HotRuby.prototype.classes = {
 				if(no < 0 || no >= recver.__native.length)
 					return null;
 				return recver.__native.charCodeAt(no);
-			} else if(args.length == 2 && typeof(args[0]) == "number" && typeof(args[1]) == "number") {
+			} else if (args.length == 2 && typeof(args[0]) == "number" && typeof(args[1]) == "number") {
 				var start = args[0];
-				if(start < 0) 
+				var length = args[1];
+				if (length < 0) {
+					return this.nilObj;
+				} 
+				if (start < 0) {
 					start = recver.__native.length + start;
-				if(start < 0 || start >= recver.__native.length)
-					return null;
-				if(args[1] < 0 || start + args[1] > recver.__native.length)
-					return null;
-				return this.createRubyString(recver.__native.substr(start, args[1]));
+				}
+				var end = start + length;
+				if (start + length >= recver.__native.length) {
+					length = recver.__native.length - start;
+				}
+				return this.createRubyString(recver.__native.substr(start, length));
 			} else {
 				throw "Unsupported String[]";
 			}
