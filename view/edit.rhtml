@@ -41,8 +41,7 @@
                     },
                     type: "POST",
                     success: function(response){
-                        var hotruby = new HotRuby();
-                        hotruby.printDebug(response);
+						$("#message").append(jQuery(html, "<div>"+response+"</div>"))
                     },
                     error: function(response){
                         alert("セーブに失敗しました！");
@@ -100,7 +99,7 @@
 			  <a href="#run">実行</a>
 		    </div>
 			<%= navbar %>
-
+			<div id="message" data-role="content"></div>
             <div id="content" data-role="content">
                 <%= flashbox %>
                 <textarea name="text" id="ruby_src" ><%= @text %></textarea>
