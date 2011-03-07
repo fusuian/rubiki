@@ -1693,9 +1693,9 @@ HotRuby.prototype.classes = {
 				var no = args[0];
 				if(no < 0) 
 					no = recver.__native.length + no;
-				if(no < 0 || no >= recver.__native.length)
-					return null;
-				return recver.__native.charCodeAt(no);
+				if(no < 0 || no > recver.__native.length)
+					return this.nilObj;
+				return this.createRubyString(recver.__native.charAt(no));
 			} else if (args.length == 2 && typeof(args[0]) == "number" && typeof(args[1]) == "number") {
 				var start = args[0];
 				var length = args[1];
