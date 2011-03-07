@@ -1746,6 +1746,14 @@ HotRuby.prototype.classes = {
 			return recver.__native[args[0]];
 		},
 		
+		"first" : function(recver, args) {
+			return recver.__native[0];
+		},
+		
+		"last" : function(recver, args) {
+			return recver.__native[-1];
+		},
+		
 		"[]=" : function(recver, args) {
 			recver.__native[args[0]] = args[1];
 		},
@@ -1778,7 +1786,7 @@ HotRuby.prototype.classes = {
 			return recver.__native.shift();
 		},
 		
-		"choice" : function(recver) {
+		"sample" : function(recver) {
 			var n = Math.floor(Math.random()*recver.__native.length);
 			return recver.__native[n];
 		},
@@ -1811,9 +1819,7 @@ HotRuby.prototype.classes = {
 					break;			
 			}
 			return result;
-		},
-		
-
+		}
 		
 	},
 	
@@ -1923,6 +1929,26 @@ HotRuby.prototype.classes = {
 					sf.sp--;
 				}
 			}
+		},
+		
+		"inject" : function(recver, args, sf) {
+			var result = args[0]; // TODO: 引数を省略するとself.first
+			for (var i = 0; i < recver.__native.length; i++) {
+				var obj = recver.__native[i];
+				this.invokeMethod(args[1], "yield", [result, obj], sf, 0, false);
+				result = sf.stack[sf.sp--];
+			}
+			switch (typeof(result)) {
+				case "number":
+					break;
+				case "string":
+					result = this.createRubyString(result);
+					break;
+				default:
+					this.printDebug("inject is not supported "+ typeof(result));
+					break;			
+			}
+			return result;
 		}
 	},
 	
