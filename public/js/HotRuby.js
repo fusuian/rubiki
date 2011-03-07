@@ -1544,6 +1544,10 @@ HotRuby.prototype.classes = {
 			return Math.round(recver);
 		},
 
+		"abs" : function(recver) {
+			return Math.abs(recver)
+		},
+
 		// 以下、いつかちゃんとIntegerに移したいメソッドw
 		"times" : function(recver, args, sf) {
 			var proc = args[0];
