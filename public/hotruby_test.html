@@ -52,6 +52,26 @@
 			<pre id="opcode"></pre>
 		</div>
 		
+		<h2>String#[nth] のテスト</h2>
+		<div>
+		<textarea id="slice1" cols="80" rows="10">
+		str = "abcde"
+		puts "<#{str[0]}|"
+		puts "#{str[4]}|"
+		puts "#{str[5]}>"
+		puts "<#{str[-1]}|"
+		puts "#{str[-5]}|"
+		puts "#{str[-6]}>"
+		</textarea>
+		<script language="JavaScript">
+		function testSlice1() {
+			runAndTest("#slice1", "<a|e|><e|a|>")
+		}
+		</script>
+        <button type="button" onclick="testSlice1()" value="Run">
+        	テスト
+        </button>
+
 		<h2>Array#inject のテスト</h2>
 		<div>
 		<textarea id="arrayinject" cols="80" rows="10">
@@ -273,7 +293,7 @@
 
 		<h2>String#[] のテスト</h2>
 		<div>
-		<textarea id="string" cols="80" rows="10">
+		<textarea id="slice2" cols="80" rows="10">
 		str = "abcde"
 		puts "[#{str[0,3]}|"
 		puts "#{str[2,2]}|"
@@ -282,11 +302,11 @@
 		puts "#{str[0,-1]}]"
 		</textarea>
 		<script language="JavaScript">
-		function testString() {
-			runAndTest("#string", "[abc|cd|de][e|]")
+		function testSlice2() {
+			runAndTest("#slice2", "[abc|cd|de][e|]")
 		}
 		</script>
-        <button type="button" onclick="testString()" value="Run">
+        <button type="button" onclick="testSlice2()" value="Run">
         	テスト
         </button>
 
