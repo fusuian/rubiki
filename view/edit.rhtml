@@ -41,7 +41,7 @@
                     },
                     type: "POST",
                     success: function(response){
-						$("#message").append(jQuery(html, "<div>"+response+"</div>"))
+						$("#message").append("<div>"+response+"</div>")
                     },
                     error: function(response){
                         alert("セーブに失敗しました！");
