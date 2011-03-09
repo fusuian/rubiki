@@ -13,13 +13,15 @@
         <script type="text/javascript" src="/js/HotRuby.js"></script>
         <script language="javascript" type="text/javascript" src="/editarea/edit_area_full.js"></script>
         <script language="javascript" type="text/javascript" src="/js/jsonformatter.js"></script>
+		<script src="/js/jquery.elastic.js" type="text/javascript" charset="utf-8"></script>
+		
         <script language="javascript" type="text/javascript">
             editAreaLoader.init({
                 id: "ruby_src",
                 syntax: "ruby",
                 language: "ja",
-                display: "later",
-                font_size: 14,
+                //display: "later",
+                font_size: 12,
                 replace_tab_by_spaces: 4,
                 start_highlight: true // to display with highlight mode on start-up
             });
@@ -51,16 +53,7 @@
 
 			// textarea のサイズをブラウザに合わせる            
             function fit_textarea(id){
-                var input = $(id);
-				var extraLineWidth = 15;
-				var extraLineHeight = 15;
-                var scrollHeight = input[0].scrollHeight, clientHeight = input[0].clientHeight;
-                if (clientHeight < scrollHeight) {
-                    input.css({
-                        height: (scrollHeight + extraLineHeight)
-                    });
-                }
-                
+                var input = $(id);                
                 var scrollWidth = input[0].scrollWidth, clientWidth = input[0].clientWidth;
 				var docWidth = $("body").width();
                 if (clientWidth < docWidth) {
@@ -70,6 +63,9 @@
             }
 			
 			$(function(){
+				$("#ruby_src").css("max-height", "300px");
+				$('#ruby_src').elastic();
+				$('#opcode_for_man').elastic();
 				fit_textarea("#ruby_src");
 				$("#bytecode").live("pageshow", function() {
 	                var opcode = $("#opcode").text();
@@ -84,6 +80,7 @@
         	        hotruby.compileAndRun("/compile_ruby/" + escape("<%= @page %>"), src, true);		
 				});
 				$("#clear_result").click( function(){ $("#debug").text("")} );
+				$("#clear_message").click( function(){ $("#message").text("")} );
 			}
 			);
 			
@@ -99,9 +96,10 @@
 			  <a href="#run">実行</a>
 		    </div>
 			<%= navbar %>
-			<div id="message" data-role="content"></div>
             <div id="content" data-role="content">
                 <%= flashbox %>
+				<div id="message" data-role="content"></div>
+				<a href="#" id="clear_message" data-role="button" data-inline="true">クリア</a><br/>
                 <textarea name="text" id="ruby_src" ><%= @text %></textarea>
             </div>
         </div>
