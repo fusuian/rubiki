@@ -1383,6 +1383,18 @@ HotRuby.prototype.classes = {
 			error.message = "BreakPoint.";
 			throw error;  
 		},
+				
+		"set_timeout" : function(recver, args, sf) {
+			var timeout = args[0];
+			var proc = args[1];
+			return setTimeout(
+				function() {
+					hotruby.invokeMethod(proc, "yield", [], sf, 0, false);	
+					sf.sp--;
+				},
+				timeout);
+		},
+
 		
 		/* // Ruby 1.9.2 対応：保留
 		"core#define_method": function(recver, args, sf){
