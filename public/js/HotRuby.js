@@ -179,8 +179,11 @@ HotRuby.prototype = {
 			}
 		} catch (e) {
 			this.gotoLine(sf.lineNo);
+			if (e.name == "TypeError") {
+				this.printDebug(sf.lineNo);				
+			} 
 			this.printDebug(e);
-			throw e;		
+			throw e;
 		}
 
     	//this.invokeMethod(sf.stack[0], "inspect", [], sf, 0, true);
